@@ -1,0 +1,822 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 8: Streaming Data with Pub/Sub - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 8: Streaming Data with Pub/Sub
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 8: Streaming Data with Pub/Sub
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<strong>Chapter 8: Streaming Data with Pub/Sub</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-8-streaming-data-with-pubsub-streaming-data-with-pubsub"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a>: Streaming Data with Pub/Sub</h1>
+<p>In previous chapters we've gone over how to set up batch-processing Data Pipelines, where a large number of records are added to our Warehouse at one time. Streaming, by contrast, focuses on adding small amounts of data very quickly, so that our Warehouse is updated constantly from the source system with minimal lag.</p>
+<p>To accomplish this we will be using GCP's Pub/Sub service. Pub/Sub is a messaging service that uses a "publication" and "subscription" architecture. For a particular Data Pipeline we will create a "Topic" in Pub/Sub. A Publisher service will publish data from the source system to the Topic, and then a Subscriber service will receive the data from the Topic and process it, such as inserting that data into BigQuery.</p>
+<p>One of the big concerns about streaming data is that new data will be generated faster than it can be ingested (this problem also exists in traditional batch processing, but is more likely to be a concern with streaming pipelines). Pub/Sub overcomes this potential issue by separating the service that gets the data from the source and the service that inserts the data into our warehouse. Because Pub/Sub persists the data until we are able to consume it, we have less concerns about the data being lost in transit. And once the data is published, Pub/Sub ensures the data will not be lost even if a failure occurs while the subscriber is pulling the data.</p>
+<p>In this chapter we will create a Topic, deploy a Publisher service to generate our source data, and deploy a Subscriber service that pulls the source data.</p>
+<h2 id="creating-a-pubsub-topic">Creating a Pub/Sub Topic</h2>
+<p>Generally, we'll have a single Topic per pipeline. A single Topic can have multiple Publishers and multiple Subscribers, so it offers lots of flexibility in where the data is coming from and where it is sent to.</p>
+<p>Creating a Topic is simple. Unlike Composer or Dataproc, there are <a href="https://cloud.google.com/sdk/gcloud/reference/pubsub/topics/create">few configuration options</a>, and you'll most likely be setting up your Topic by simply executing:</p>
+<pre><code class="language-bash">&gt; gcloud pubsub topics create my_topic
+</code></pre>
+<p>In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> we'll discuss how to manage your Topics in Terraform, along with your other cloud infrastructure.</p>
+<p>Now that we have our Topic, we're ready to create our Publisher and Subscriber.</p>
+<h2 id="creating-a-publisher">Creating a Publisher</h2>
+<p>The Publisher will need to have authorization to publish to your Topic. This means that the Publisher must either be controlled by your team, or you must work with another team to grant them access. Sometimes it'll be convenient to grant credentials to another team, as they will be working with a service that can publish directly. </p>
+<p>However, your source data may come from a system that is unable or unwilling to publish directly to your Topic. In such an instance you will have to set up your own service to gather the data, then publish to your Topic. An example would be gathering data in small chunks (micro-batches) through a JDBC connection and publishing that data to a Pub/Sub Topic.</p>
+<p>For our purposes, we are going to upload data to a GCS bucket (covered in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3</a> ) and use a Cloud Function (covered in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6</a>) to publish the data to a Pub/Sub Topic. Instead of running in a Cloud Function, you may decide to run the Publisher on Google Kubernetes Engine (GKE) or Cloud Run, which are also good options.</p>
+<p>First let's create a bucket that will trigger the Cloud Function publisher:</p>
+<pre><code class="language-Bash">&gt; gsutil mb gs://de-book-publisher
+</code></pre>
+<p>Now let's create our Cloud Function to publish our data. As discussed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6</a>, this file must be saved as <code>main.py</code> before being uploaded to GCP.</p>
+<pre><code class="language-Python">def publish_data(event, context):
+    from google.cloud import storage
+    from google.cloud import pubsub_v1
+
+    # get the message to publish
+    bucket_name = event['bucket']
+    file_path = event['name']
+    storage_client = storage.Client()
+    bucket = storage_client.get_bucket(bucket_name)
+    blob = bucket.blob(file_path)
+    message = blob.download_as_text()
+
+    # publish the message
+    project_id = 'de-book-dev'
+    topic_id = 'my_topic'
+    publisher = pubsub_v1.PublisherClient()
+    topic_path = publisher.topic_path(project_id, topic_id)
+    response = publisher.publish(topic_path, message.encode('utf-8'))
+    print(response.result())
+
+</code></pre>
+<p>Our Cloud Function requires two libraries, so we've got to let GCP know we need these in our environment. As discussed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6</a>, we do this by adding a <code>requirements.txt</code> file in the same folder as our Cloud Function:</p>
+<pre><code class="language-text">google-cloud-storage=1.35.0
+google-cloud-pubsub=2.2.0
+</code></pre>
+<p>Now let's deploy this function and tell it to trigger whenever a new file is uploaded to our bucket. Run the following from the same folder where the <code>main.py</code> file you just created is saved.</p>
+<pre><code class="language-Bash">&gt; gcloud functions deploy publish_data \
+    --runtime python37 \
+    --trigger-resource gs://de-book-publisher \
+    --trigger-event google.storage.object.finalize
+</code></pre>
+<p>That's it. We now have a function that will publish messages to our topic. Now we just need a subscriber so we can read them.</p>
+<h2 id="creating-a-subscriber">Creating a Subscriber</h2>
+<p>There are two types of subscriptions for a topic: "push" and "pull". The push subscription has Pub/Sub send the message to a designated HTTPS endpoint whenever it receives a message. A pull subscription requires a different service to poll the Topic to see if messages are available, and then pull them down.</p>
+<p>Let's create a pull subscription (the default):</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub subscriptions create my-subscriber --topic=my_topic
+</code></pre>
+<p>Now that our publisher and subscriber are set up let's upload a file to the bucket that will publish a message:</p>
+<pre><code class="language-Bash">&gt; echo &quot;My first message&quot; | gsutil cp - gs://de-book-publisher/first_message.txt
+</code></pre>
+<p>We've created a file in our bucket, which has triggered a Cloud Function that copied the contents of the file into a message that it published to a Pub/Sub Topic. Let's check to see if the message is there:</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub subscriptions pull my-subscriber
+┌──────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┬──────────────┐
+│       DATA       │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │ ACK_ID       │
+├──────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┼──────────────┤
+│ My first message │ 1901834288157567 │              │            │                  │ ABC123       │
+└──────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┴──────────────┘
+</code></pre>
+<p>One of the ways that Pub/Sub allows your streaming service to be resilient is that it will not remove a message from a Topic until the message has been acknowledged. This helps ensure that a failure while your subscriber is pulling data doesn't result in data loss (though this does leave open the possibility of receiving the same message twice).</p>
+<p>So this time let's pull the message down and acknowledge:</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub subscriptions pull my-subscriber --auto-ack
+┌──────────────────┬──────────────────┬──────────────┬────────────┬──────────────────┐
+│       DATA       │    MESSAGE_ID    │ ORDERING_KEY │ ATTRIBUTES │ DELIVERY_ATTEMPT │
+├──────────────────┼──────────────────┼──────────────┼────────────┼──────────────────┤
+│ My first message │ 1901834288157567 │              │            │                  │
+└──────────────────┴──────────────────┴──────────────┴────────────┴──────────────────┘
+</code></pre>
+<p>If we try to pull again we find there are no messages:</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub subscriptions pull my-subscriber --auto-ack
+Listed 0 items.
+</code></pre>
+<p>In practice you're more likely to pull messages with Python code like so:</p>
+<pre><code class="language-Python">from google.cloud import pubsub_v1
+
+project_id = 'de-book-dev'
+subscription_id = 'my-subscriber'
+
+subscriber = pubsub_v1.SubscriberClient()
+subscription_path = subscriber.subscription_path(project_id, subscription_id)
+
+while True:
+    response = subscriber.pull(subscription_path)
+
+    if response.received_messages:
+        for item in response.received_messages:
+            print(item.message) # this is where you would do something like insert the data into BigQuery
+            subscriber.acknowledge(subscription_path, ack_ids=[item.ack_id])
+</code></pre>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>We created a GCS bucket, Cloud Function, and Pub/Sub Topic in this chapter, so let's delete them:</p>
+<pre><code class="language-Bash">&gt; gsutil rm -r gs://de-book-publisher
+
+&gt; gcloud functions delete publish_data
+
+&gt; gcloud pubsub topics delete my_topic
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_07_parallel_processing/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 7: Parallel Processing with Dataproc and Spark
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_09_secrets/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 9: Managing Credentials with Google Secret Manager
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

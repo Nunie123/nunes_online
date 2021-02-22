@@ -1,0 +1,841 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 7: Parallel Processing with Dataproc and Spark - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 7: Parallel Processing with Dataproc and Spark
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 7: Parallel Processing with Dataproc and Spark
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<strong>Chapter 7: Parallel Processing with Dataproc and Spark</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-7-parallel-processing-with-dataproc-and-spark"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7</a> : Parallel Processing with Dataproc and Spark</h1>
+<p>Dataproc is GCP's fully managed service for running Apache Spark. Spark is an open-source program that has a wide array of capabilities, such as machine learning and data streaming, but I'm going to show you how we can use Spark perform transformations on very large data files. Spark's Python API (called PySpark), will look familiar to you if you have used Python's Pandas library. However, the key difference between processing data in Pandas vs. Spark is that Pandas works entirely in memory on a single machine, whereas Spark is designed to work across multiple machines and can manage the data in memory and on disk.</p>
+<p>Spark is operating on a Cluster of machines, and each machine is working in coordination to process a transformation job. This behavior works by default and allows Spark to perform massive parallel processing. That means we can quickly perform complex transformations on extremely large amounts of data.</p>
+<p>A Dataproc Cluster behaves similarly to a Composer Environment, in that we issue commands to create the Cluster and GCP charges us for the amount of time the Cluster is running. Like Composer, Dataproc does not automatically auto-scale (though unlike Composer, you can set an autoscaling policy as described <a href="https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/autoscaling">here</a>). You set the number and type of machines being used when you instantiate your Cluster.</p>
+<p>In this chapter we'll look at a file that won't load into BigQuery, and we'll use PySpark to transform the file to allow us to load it. We'll need a bucket to store the file we'll be transforming, so let's make that now:</p>
+<pre><code class="language-bash">&gt; gsutil mb gs://de-book-dataproc
+</code></pre>
+<h2 id="why-do-we-need-dataproc">Why do we need Dataproc?</h2>
+<p>So far in this book I've been demonstrating an ELT (Extract Load Transform) approach to building a Data Pipeline, as distinguished from ETL. In an ELT approach we get our raw data into our Data Lake and Data Warehouse as quickly as possible, and then we perform our transformations.</p>
+<p>However, there are good reasons to perform transformations before loading your data into your Warehouse. Perhaps your team is more comfortable working in Python, and it's more convenient to do your processing in Python before you load in your data. </p>
+<p>Even if you are taking an ELT approach to your Pipelines, there may be instances where you will be unable to load the data into BigQuery without first doing some transformations. For example, while BigQuery can ingest nested data such as an array of integers or an array of objects (in BQ the objects are called "Structs"), BigQuery cannot ingest an array of arrays. Additionally, you may run into other problems with source files, such as them being malformed, that prevents BigQuery from loading the files.</p>
+<p>In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a> we did some pre-processing before we loaded our JSON data into BigQuery: we converted the JSON file from standard JSON format to Newline-Delimited JSON. We were able to do this using the compute power from our Composer Environment cluster because the amount of data we were dealing with was small. If we're dealing with large amounts of data that needs pre-processing, then we need to spin up additional resources so that we don't overwhelm our Composer Environment.</p>
+<p>Creating a Dataproc Cluster is an excellent way to bring more compute power to bear on your data before it is loaded into BigQuery. </p>
+<h2 id="creating-a-dataproc-cluster">Creating a Dataproc Cluster</h2>
+<p>Before we can start working with Dataproc we need to enable it on GCP:</p>
+<pre><code class="language-bash">&gt; gcloud services enable dataproc.googleapis.com
+</code></pre>
+<p>There are <a href="https://cloud.google.com/sdk/gcloud/reference/dataproc/clusters/create">a lot of options</a> you can set for creating a Dataproc Cluster. Here is a typical command:</p>
+<pre><code class="language-bash">&gt; gcloud dataproc clusters create my-cluster \
+    --region=us-central1 \
+    --num-workers=2 \
+    --worker-machine-type=n2-standard-2 \
+    --image-version=1.5-debian10
+</code></pre>
+<p>You can see I've specified the number of workers and the type of machine, which controls how much processing power the Cluster has. The image name defines the environment Spark will be running in. You can see more details about the images you can use <a href="https://cloud.google.com/dataproc/docs/concepts/versioning/dataproc-versions">here</a>.</p>
+<p>We could have also included the <code>--metadata</code> and <code>--initialization-actions</code> options to install Python packages into our environment:</p>
+<pre><code class="language-bash">    --metadata='PIP_PACKAGES=requests==2.24.0' \
+    --initialization-actions=gs://de-book-dataproc/pip-install.sh
+</code></pre>
+<p>Google provides the script to install the requirements in an open GCS location, but recommends you copy the file locally to ensure updates they make to the file don't break your code. We can do that here:</p>
+<pre><code class="language-bash">&gt; gsutil cp gs://goog-dataproc-initialization-actions-us-central1/python/pip-install.sh gs://de-book-dataproc
+</code></pre>
+<p>We won't need to install any Python packages for our job, below.</p>
+<p>We now have a Dataproc Cluster running Spark. Let's submit a job and have our Cluster do some work.</p>
+<h2 id="submitting-a-pyspark-job">Submitting a PySpark Job</h2>
+<p>Let's suppose we have a data source that provides a JSON file where one of its fields is a list of lists, which is a structure BigQuery doesn't support. We can use Dataproc to transform the data and then save the file back to GCS to be loaded into BigQuery.</p>
+<p>First, let's create our source file and save it to our bucket:</p>
+<pre><code class="language-bash">&gt; echo '{&quot;one_dimension&quot;: [1,2,3], &quot;two_dimensions&quot;: [[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;],[1,2,3]]}
+{&quot;one_dimension&quot;: [3,4,5], &quot;two_dimensions&quot;: [[&quot;d&quot;,&quot;e&quot;,&quot;f&quot;],[3,4,5]]}' &gt; raw_file.json
+&gt; gsutil cp raw_file.json gs://de-book-dataproc
+</code></pre>
+<p>Now, let's build our PySpark file that will perform our transformation:</p>
+<pre><code class="language-python">#!/usr/bin/env python
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import flatten
+
+def main():
+    spark = SparkSession.builder.appName(&quot;FileCleaner&quot;).getOrCreate()
+    df = spark.read.json(&quot;gs://de-book-dataproc/raw_file.json&quot;)
+    df2 = df.withColumn('two_dimensions', flatten(df.two_dimensions))
+    df2.write.json(&quot;gs://de-book-dataproc/cleaned_files/&quot;, mode='overwrite')
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre>
+<p>Here we're doing a simple transformation of flattening our two-dimensional array into a one-dimensional array. Spark has a lot of versatility in transforming data, with <a href="https://www.amazon.com/Spark-Definitive-Guide-Processing-Simple/dp/1491912219/">whole books</a> being written about it.</p>
+<p>Now that we have our PySpark file let's move it up to GCS:</p>
+<pre><code class="language-bash">&gt; gsutil cp flattener.py gs://de-book-dataproc
+</code></pre>
+<p>Finally, we are ready to submit our dataproc job:</p>
+<pre><code class="language-bash">&gt; gcloud dataproc jobs submit pyspark \
+    gs://de-book-dataproc/flattener.py \
+    --cluster=my-cluster \
+    --region=us-central1
+</code></pre>
+<p>With our job complete we can see our transformed file:</p>
+<pre><code class="language-bash">&gt; gsutil ls gs://de-book-dataproc/cleaned_files
+gs://de-book-dataproc/cleaned_files/
+gs://de-book-dataproc/cleaned_files/_SUCCESS
+gs://de-book-dataproc/cleaned_files/part-00000-a07721fc-76a2-4235-912c-b88df333e4d4-c000.json
+&gt; gsutil cat gs://de-book-dataproc/cleaned_files/part-00000-a07721fc-76a2-4235-912c-b88df333e4d4-c000.json
+{&quot;one_dimension&quot;:[1,2,3],&quot;two_dimensions&quot;:[&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;]}
+{&quot;one_dimension&quot;:[3,4,5],&quot;two_dimensions&quot;:[&quot;d&quot;,&quot;e&quot;,&quot;f&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;]}
+</code></pre>
+<p>Unfortunately, Spark does not allow you to name your output files, so if you need to distinguish which files were the output of a particular job you should group your files by timestamped folders (e.g. <code>gs://de-book-dataproc/cleaned_files_20201031/</code>).</p>
+<h2 id="deleting-a-pyspark-cluster">Deleting a PySpark Cluster</h2>
+<p>If you have periodic need for data processing with Spark, then you should delete your Clusters once you are done using them. It only takes a minute or two to build a new Cluster, and you don't want to be paying for a Cluster you're not using.</p>
+<pre><code class="language-bash">&gt; gcloud dataproc clusters delete my-cluster --region=us-central1
+</code></pre>
+<p>However, if you are continuously using your Dataproc Cluster (e.g. to process data from a pipeline that has batches every 10 minutes), then it may make sense to leave your Cluster up all the time.</p>
+<h2 id="dataproc-and-composer">Dataproc and Composer</h2>
+<p>We've talked about how to use Dataproc, but we haven't really discussed how to integrate it into our Data Pipelines. The answer is simple enough, we can create tasks in Airflow (discussed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a>) to create the Cluster, submit the job, then delete the Cluster:</p>
+<pre><code class="language-python">t_create_cluster = BashOperator(
+    task_id='create_cluster',
+    bash_command=&quot;&quot;&quot;
+        gcloud dataproc clusters create my-cluster \\
+            --region=us-central1 \\
+            --num-workers=2 \\
+            --worker-machine-type=n2-standard-2 \\
+            --image-version=1.5-debian10
+    &quot;&quot;&quot;,
+    dag=dag
+)
+
+t_submit_job = BashOperator(
+    task_id='submit_job',
+    bash_command=&quot;&quot;&quot;
+        gcloud dataproc jobs submit pyspark \\
+            gs://de-book-dataproc/flattener.py \\
+            --cluster=my-cluster \\
+            --region=us-central1
+    &quot;&quot;&quot;,
+    dag=dag
+)
+t_submit_job.set_upstream(t_create_cluster)
+
+t_delete_cluster = BashOperator(
+    task_id='delete_cluster',
+    bash_command='gcloud dataproc clusters delete my-cluster --region=us-central1',
+    dag=dag
+)
+t_delete_cluster.set_upstream(t_submit_job)
+</code></pre>
+<p>When managing a Dataproc Cluster from your Composer Environment it is important to have good alerting (discussed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13</a>). It is possible for Airflow to mark a task as failed (e.g. because it has timed out), without the Dataproc job ending or Cluster deleting itself.</p>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>We've already deleted our Dataproc Cluster above, so all that's left is for us to delete the bucket we created and the buckets created by Dataproc:</p>
+<pre><code class="language-bash">&gt; gsutil ls
+gs://dataproc-staging-us-central1-204024561480-kkb48scf/
+gs://dataproc-temp-us-central1-204024561480-3i3d24k7/
+gs://de-book-dataproc/
+
+&gt; gsutil rm -r gs://dataproc-staging-us-central1-204024561480-kkb48scf/
+&gt; gsutil rm -r gs://dataproc-temp-us-central1-204024561480-3i3d24k7/
+&gt; gsutil rm -r gs://de-book-dataproc/
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_06_event_triggers/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_08_streaming/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 8: Streaming Data with Pub/Sub
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

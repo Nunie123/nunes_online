@@ -1,0 +1,1046 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 10: Infrastructure as Code with Terraform - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 10: Infrastructure as Code with Terraform
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 10: Infrastructure as Code with Terraform
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<strong>Chapter 10: Infrastructure as Code with Terraform</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-10-infrastructure-as-code-with-terraform-infrastructure-as-code-with-terraform"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a>: Infrastructure as Code with Terraform</h1>
+<p>Much of a Data Engineer's responsibility is to manage their tools. So far in this book we've discussed Composer, GCS, BigQuery, Cloud Functions, Dataproc, Pub/Sub, and Secret Manager. We've been managing these resources through command line scripts, which is useful for learning, but not a good way to handle your production environment. We want to define these resources in text files and have those files in source control. This is called Infrastructure as Code.</p>
+<p>Terraform is a tool that allows you to define your infrastructure, and the various permissions to access that infrastructure, in a series of configuration files. Terraform is not owned or managed by Google, but it does work well with GCP.</p>
+<p>Terraform is not a GCP service, so we'll be running Terraform on our local machine.</p>
+<h2 id="installing-terraform">Installing Terraform</h2>
+<p>If you're on a Mac, Terraform can easily be installed through <a href="https://brew.sh/">Homebrew</a>:</p>
+<pre><code class="language-Bash">&gt; brew tap hashicorp/tap
+&gt; brew install hashicorp/tap/terraform
+</code></pre>
+<p>Terraform also works on Linux and Windows. More installation methods are available <a href="https://learn.hashicorp.com/tutorials/terraform/install-cli">here</a>.</p>
+<p>If you want to enable auto-complete for Terraform on your bash or zsh shell, then execute the following command then restart your terminal:</p>
+<pre><code class="language-Bash">&gt; terraform -install-autocomplete
+</code></pre>
+<p>That's it. We now have Terraform on our local machine. Next we'll create some configuration files to define our infrastructure.</p>
+<h2 id="creating-your-configuration-files">Creating Your Configuration Files</h2>
+<p>One of the main benefits of using Terraform, or Infrastructure as Code more generally, is the ability to define our infrastructure in a way that allows us to put it into source control. In this section we'll be writing the configuration files that will go into our source control (e.g. git).</p>
+<p>While Terraform allows you to get sophisticated in your setup, it also allows you to get up and running with minimal code. Let's create our <code>main.tf</code> file:</p>
+<pre><code class="language-JS">// This &quot;terraform block&quot; tells Terraform it will need to look in the google registry when identifying which resources to deploy
+terraform {
+    required_providers {
+        google = {
+        source = &quot;hashicorp/google&quot;
+        version = &quot;3.5.0&quot;
+        }
+    }
+}
+
+// This &quot;provider block&quot; configures your google account.
+provider &quot;google&quot; {
+    credentials = file(&quot;../keys/de-book-dev-secret-key.json&quot;) // provide the file path to your GCP secret key file
+    project = &quot;de-book-dev&quot;
+    region  = &quot;us-central1&quot;
+    zone    = &quot;us-central1-c&quot;
+}
+
+// This &quot;resource block&quot; configures the specific infrastructure you wish to deploy
+resource &quot;google_storage_bucket&quot; &quot;de-book-terraform-test&quot; {
+    name = &quot;de-book-terraform-test-1234567654321&quot;   // This is the name of the bucket to be created
+    location = &quot;US&quot;
+    force_destroy = false   // This setting prevents us from deleting a bucket if there are files within
+    storage_class = &quot;STANDARD&quot;
+}
+</code></pre>
+<p>You can view how to create additional types of resource blocks <a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs">here</a>.</p>
+<p>This code allows us to create a bucket called "de-book-terraform-test-1234567654321". While the above code only creates a single resource (a GCS bucket), we can add as many resource blocks as we need to this file to define all the infrastructure we need. We'll show this in the <strong>Updating your Infrastructure</strong> section, below.</p>
+<p>While our infrastructure configuration files, like the one above, should go into source control, Terraform will also generate some configuration files for internal use that are not valuable to add to source control. For those we can create a <code>.gitignore</code> file:</p>
+<pre><code class="language-text">.tfstate
+.terraform
+.tfplan
+</code></pre>
+<h2 id="deploying-your-infrastructure-to-gcp">Deploying Your Infrastructure to GCP</h2>
+<p>Now that we've defined our infrastructure, let's deploy it. In the same directory as our <code>main.tf</code> file, execute the following:</p>
+<pre><code class="language-Bash">&gt; terraform init
+&gt; terraform apply
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # google_storage_bucket.de-book-terraform-test will be created
+  + resource &quot;google_storage_bucket&quot; &quot;de-book-terraform-test&quot; {
+      + bucket_policy_only = (known after apply)
+      + force_destroy      = false
+      + id                 = (known after apply)
+      + location           = &quot;US&quot;
+      + name               = &quot;de-book-terraform-test-1234567654321&quot;
+      + project            = (known after apply)
+      + self_link          = (known after apply)
+      + storage_class      = &quot;STANDARD&quot;
+      + url                = (known after apply)
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value:
+</code></pre>
+<p>Before allowing us to deploy our infrastructure, Terraform prints an execution plan with all of the actions it will take. This is especially useful when multiple engineers are working on the same infrastructure (as is often the case). If someone else has modified your infrastructure, but that change is not present in your files, you will see it in this execution plan. So be sure to actually read this plan, otherwise you could end up accidentally rolling back infrastructure your colleagues deployed. And no one wants to be that guy.</p>
+<p>But in this case, we see just the one change we were expecting: a new bucket is being added. So let's type "yes" and deploy our bucket:</p>
+<pre><code class="language-Bash">  Enter a value: yes
+
+google_storage_bucket.de-book-terraform-test: Creating...
+google_storage_bucket.de-book-terraform-test: Creation complete after 1s [id=de-book-terraform-test-1234567654321]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+</code></pre>
+<p>Let's confirm that our bucket was created:</p>
+<pre><code class="language-Bash">&gt; gsutil ls
+
+gs://de-book-terraform-test-1234567654321/
+</code></pre>
+<p>Obviously we'll be using a lot more infrastructure in production. I provide an example Terraform file with more resources listed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A</a>. Documentation for the full list of infrastructure you can deploy is <a href="https://registry.terraform.io/providers/hashicorp/google/latest/docs">here</a>.</p>
+<h2 id="updating-your-infrastructure">Updating your Infrastructure</h2>
+<p>We can expect our infrastructure needs to continue to change. Fortunately implementing that change is as simple as updating our Terraform file. Let's create a Pub/Sub Topic, a subscription for that Topic, and set <code>force_destroy</code> to <code>true</code> for our existing bucket. Our <code>main.tf</code> file now looks like:</p>
+<pre><code class="language-JS">terraform {
+    required_providers {
+        google = {
+        source = &quot;hashicorp/google&quot;
+        version = &quot;3.5.0&quot;
+        }
+    }
+}
+
+provider &quot;google&quot; {
+    credentials = file(&quot;../keys/de-book-dev-2d2abed79f9f.json&quot;)
+    project = &quot;de-book-dev&quot;
+    region  = &quot;us-central1&quot;
+    zone    = &quot;us-central1-c&quot;
+}
+
+resource &quot;google_storage_bucket&quot; &quot;de-book-terraform-test&quot; {
+    name = &quot;de-book-terraform-test-1234567654321&quot; 
+    location = &quot;US&quot;
+    force_destroy = true   # Updated this to true
+    storage_class = &quot;STANDARD&quot;
+}
+
+// Added the resources below
+resource &quot;google_pubsub_topic&quot; &quot;terraform-test&quot; {
+  name = &quot;terraform-test-topic&quot;
+}
+
+resource &quot;google_pubsub_subscription&quot; &quot;example&quot; {
+  name  = &quot;example-subscription&quot;
+  topic = google_pubsub_topic.terraform-test.name
+  ack_deadline_seconds = 20
+}
+</code></pre>
+<p>Now we can apply our changes (typing "yes" when prompted):</p>
+<pre><code class="language-Bash">&gt; terraform apply
+google_storage_bucket.de-book-terraform-test: Refreshing state... [id=de-book-terraform-test-1234567654321]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # google_pubsub_subscription.example will be created
+  + resource &quot;google_pubsub_subscription&quot; &quot;example&quot; {
+      + ack_deadline_seconds       = 20
+      + id                         = (known after apply)
+      + message_retention_duration = &quot;604800s&quot;
+      + name                       = &quot;example-subscription&quot;
+      + path                       = (known after apply)
+      + project                    = (known after apply)
+      + topic                      = &quot;terraform-test-topic&quot;
+
+      + expiration_policy {
+          + ttl = (known after apply)
+        }
+    }
+
+  # google_pubsub_topic.terraform-test will be created
+  + resource &quot;google_pubsub_topic&quot; &quot;terraform-test&quot; {
+      + id      = (known after apply)
+      + name    = &quot;terraform-test-topic&quot;
+      + project = (known after apply)
+
+      + message_storage_policy {
+          + allowed_persistence_regions = (known after apply)
+        }
+    }
+
+  # google_storage_bucket.de-book-terraform-test will be updated in-place
+  ~ resource &quot;google_storage_bucket&quot; &quot;de-book-terraform-test&quot; {
+        bucket_policy_only = false
+      ~ force_destroy      = false -&gt; true
+        id                 = &quot;de-book-terraform-test-1234567654321&quot;
+        labels             = {}
+        location           = &quot;US&quot;
+        name               = &quot;de-book-terraform-test-1234567654321&quot;
+        project            = &quot;de-book-dev&quot;
+        requester_pays     = false
+        self_link          = &quot;https://www.googleapis.com/storage/v1/b/de-book-terraform-test-1234567654321&quot;
+        storage_class      = &quot;STANDARD&quot;
+        url                = &quot;gs://de-book-terraform-test-1234567654321&quot;
+    }
+
+Plan: 2 to add, 1 to change, 0 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_pubsub_topic.terraform-test: Creating...
+google_storage_bucket.de-book-terraform-test: Modifying... [id=de-book-terraform-test-1234567654321]
+google_storage_bucket.de-book-terraform-test: Modifications complete after 0s [id=de-book-terraform-test-1234567654321]
+google_pubsub_topic.terraform-test: Creation complete after 1s [id=projects/de-book-dev/topics/terraform-test-topic]
+google_pubsub_subscription.example: Creating...
+google_pubsub_subscription.example: Creation complete after 2s [id=projects/de-book-dev/subscriptions/example-subscription]
+
+Apply complete! Resources: 2 added, 1 changed, 0 destroyed.
+</code></pre>
+<p>We see that Terraform added two resources and changed one resource, as we expected.</p>
+<p>While it is still possible to provision GCP infrastructure through other means, such as the GCP Console or command line, in practice our Terraform file or files should represent our entire infrastructure on GCP.</p>
+<p>We can remove a resource by simply deleting the resource block from our Terraform file. Let's delete out bucket:</p>
+<pre><code class="language-JS">terraform {
+    required_providers {
+        google = {
+        source = &quot;hashicorp/google&quot;
+        version = &quot;3.5.0&quot;
+        }
+    }
+}
+
+provider &quot;google&quot; {
+    credentials = file(&quot;../keys/de-book-dev-2d2abed79f9f.json&quot;)
+    project = &quot;de-book-dev&quot;
+    region  = &quot;us-central1&quot;
+    zone    = &quot;us-central1-c&quot;
+}
+
+// Our GCS resource used to be here
+
+resource &quot;google_pubsub_topic&quot; &quot;terraform-test&quot; {
+  name = &quot;terraform-test-topic&quot;
+}
+
+resource &quot;google_pubsub_subscription&quot; &quot;example&quot; {
+  name  = &quot;example-subscription&quot;
+  topic = google_pubsub_topic.terraform-test.name
+  ack_deadline_seconds = 20
+}
+</code></pre>
+<p>Now let's apply our changes:</p>
+<pre><code class="language-Bash">&gt; terraform apply
+google_pubsub_topic.terraform-test: Refreshing state... [id=projects/de-book-dev/topics/terraform-test-topic]
+google_storage_bucket.de-book-terraform-test: Refreshing state... [id=de-book-terraform-test-1234567654321]
+google_pubsub_subscription.example: Refreshing state... [id=projects/de-book-dev/subscriptions/example-subscription]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # google_storage_bucket.de-book-terraform-test will be destroyed
+  - resource &quot;google_storage_bucket&quot; &quot;de-book-terraform-test&quot; {
+      - bucket_policy_only = false -&gt; null
+      - force_destroy      = true -&gt; null
+      - id                 = &quot;de-book-terraform-test-1234567654321&quot; -&gt; null
+      - labels             = {} -&gt; null
+      - location           = &quot;US&quot; -&gt; null
+      - name               = &quot;de-book-terraform-test-1234567654321&quot; -&gt; null
+      - project            = &quot;de-book-dev&quot; -&gt; null
+      - requester_pays     = false -&gt; null
+      - self_link          = &quot;https://www.googleapis.com/storage/v1/b/de-book-terraform-test-1234567654321&quot; -&gt; null
+      - storage_class      = &quot;STANDARD&quot; -&gt; null
+      - url                = &quot;gs://de-book-terraform-test-1234567654321&quot; -&gt; null
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+google_storage_bucket.de-book-terraform-test: Destroying... [id=de-book-terraform-test-1234567654321]
+google_storage_bucket.de-book-terraform-test: Destruction complete after 1s
+
+Apply complete! Resources: 0 added, 0 changed, 1 destroyed.
+</code></pre>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>We used Terraform to create three resources, then destroy one of them. So we should have two resources left:</p>
+<pre><code class="language-Bash">&gt; terraform state list
+google_pubsub_subscription.example
+google_pubsub_topic.terraform-test
+</code></pre>
+<p>We could delete these Pub/Sub resources with the command line, as we did in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a>. However, we can also tell Terraform to destroy all of the resources it manages:</p>
+<pre><code class="language-Bash">&gt; terraform destroy
+google_pubsub_topic.terraform-test: Refreshing state... [id=projects/de-book-dev/topics/terraform-test-topic]
+google_pubsub_subscription.example: Refreshing state... [id=projects/de-book-dev/subscriptions/example-subscription]
+
+An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # google_pubsub_subscription.example will be destroyed
+  - resource &quot;google_pubsub_subscription&quot; &quot;example&quot; {
+      - ack_deadline_seconds       = 20 -&gt; null
+      - id                         = &quot;projects/de-book-dev/subscriptions/example-subscription&quot; -&gt; null
+      - labels                     = {} -&gt; null
+      - message_retention_duration = &quot;604800s&quot; -&gt; null
+      - name                       = &quot;example-subscription&quot; -&gt; null
+      - path                       = &quot;projects/de-book-dev/subscriptions/example-subscription&quot; -&gt; null
+      - project                    = &quot;de-book-dev&quot; -&gt; null
+      - retain_acked_messages      = false -&gt; null
+      - topic                      = &quot;projects/de-book-dev/topics/terraform-test-topic&quot; -&gt; null
+
+      - expiration_policy {
+          - ttl = &quot;2678400s&quot; -&gt; null
+        }
+    }
+
+  # google_pubsub_topic.terraform-test will be destroyed
+  - resource &quot;google_pubsub_topic&quot; &quot;terraform-test&quot; {
+      - id      = &quot;projects/de-book-dev/topics/terraform-test-topic&quot; -&gt; null
+      - labels  = {} -&gt; null
+      - name    = &quot;terraform-test-topic&quot; -&gt; null
+      - project = &quot;de-book-dev&quot; -&gt; null
+    }
+
+Plan: 0 to add, 0 to change, 2 to destroy.
+
+Do you really want to destroy all resources?
+  Terraform will destroy all your managed infrastructure, as shown above.
+  There is no undo. Only 'yes' will be accepted to confirm.
+
+  Enter a value: yes
+
+google_pubsub_subscription.example: Destroying... [id=projects/de-book-dev/subscriptions/example-subscription]
+google_pubsub_subscription.example: Destruction complete after 1s
+google_pubsub_topic.terraform-test: Destroying... [id=projects/de-book-dev/topics/terraform-test-topic]
+google_pubsub_topic.terraform-test: Destruction complete after 1s
+
+Destroy complete! Resources: 2 destroyed.
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_09_secrets/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 9: Managing Credentials with Google Secret Manager
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_11_deployment_pipelines/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 11: Deployment Pipelines with Cloud Build
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

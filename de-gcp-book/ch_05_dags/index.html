@@ -1,0 +1,1161 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 5: Setting up DAGs in Composer and Airflow - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 5: Setting up DAGs in Composer and Airflow
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 5: Setting up DAGs in Composer and Airflow
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<strong>Chapter 5: Setting up DAGs in Composer and Airflow</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-5-setting-up-dags-in-composer-and-airflow"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a>: Setting up DAGs in Composer and Airflow</h1>
+<p>In previous chapters we focused on specific technologies: Composer, GCS, and BigQuery. In this chapter we'll be pulling together everything we've learned to build a realistic data pipeline. We're going to be setting up a Data Warehouse to allow our users to analyze cryptocurrency data. We'll be building a DAG to pull data into our Data Lake from a web API. We'll then be moving our data into BigQuery. Finally, we'll be running transformations on our data so that it is easy for our users wrangle.</p>
+<h2 id="initializing-the-gcp-infrastructure">Initializing the GCP Infrastructure</h2>
+<p>For this chapter we are going to need a Composer Environment, a GCS Bucket, and a couple BigQuery Datasets. In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> I'll show how to manage each of these pieces of infrastructure in your code using Terraform. But for now, we're going to set them up using the command line tools.</p>
+<p>First, we need to make sure GCP uses our service account:</p>
+<pre><code class="language-bash">&gt; export GOOGLE_APPLICATION_CREDENTIALS=&quot;/path/to/keys/de-book-dev.json&quot;
+</code></pre>
+<p>The Composer Environment can take a good while to spin up after we issue the command, so we'll start that first:</p>
+<pre><code class="language-bash">&gt; gcloud composer environments create bitcoin-dev \
+    --location us-central1 \
+    --zone us-central1-f \
+    --machine-type n1-standard-1 \
+    --image-version composer-1.12.2-airflow-1.10.10 \
+    --python-version 3 \
+    --node-count 3 \
+    --service-account composer-dev@de-book-dev.iam.gserviceaccount.com 
+</code></pre>
+<p>For more details on setting up a Composer Environment check out <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a>.</p>
+<p>Now let's create our GCS Buckets:</p>
+<pre><code class="language-bash">&gt; gsutil mb gs://de-book-bitcoin-web-data
+</code></pre>
+<p>Finally, let's create our BigQuery Datasets:</p>
+<pre><code class="language-bash">&gt; bq mk --dataset bitcoin_landing
+&gt; bq mk --dataset bitcoin_mart
+</code></pre>
+<p>The "bitcoin_landing" Dataset will be where we will load our data from GCS. The "bitcoin_mart" Dataset with be where we expose our transformed data to our users. </p>
+<p>While we're waiting for our Composer Environment to finish building we can start working on our DAGs.</p>
+<h2 id="coingecko-data-pipeline">CoinGecko Data Pipeline</h2>
+<p>CoinGecko provides numerous free web API endpoints providing data on cryptocurrency. We are going to be getting data from their <code>/coins/markets</code> endpoint to get information about the top 100 currencies they track. The response is in standard JSON format, so we'll convert that to JSON Lines format, then save it in GCS. Finally, we'll load the data into BigQuery and remove duplicate records. You've already seen how to do almost every part of this pipeline in Chapters 1-3, this will just be bringing it all together.</p>
+<h3 id="creating-the-tasks">Creating the Tasks</h3>
+<p>As I described in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a>, Airflow manages a series of Tasks that do the work in your pipeline. Here I've chosen to break this pipeline into five Tasks:
+1. Download and save the source data.
+2. Copy the file to GCS.
+3. Load the data into BigQuery.
+4. Create the table to be exposed to users.
+5. Load the data into the final table.</p>
+<p>There are no strict rules on how to break up the work. One of the main benefits of using Airflow is the ability to break a pipeline down into discrete Tasks, so it is generally a good idea to keep the Tasks small.</p>
+<h4 id="task-1-download-and-save-the-source-data">Task 1: Download and Save the Source Data</h4>
+<p>In this Task we will make a GET request to the web API, then save the returned JSON data as a JSON Lines file. We're using the PythonVirtualenvOperator, which allows us to execute a Python function from within a virtual environment. We need the virtual environment to import the <code>pandas</code> and <code>requests</code> libraries. We're using <code>requests</code> to make the HTTP request, and we're using <code>pandas</code> to convert the data to a JSON Lines file. In this step we're saving the file locally, which Composer has mapped to a GCS Bucket.</p>
+<pre><code class="language-python">filename = 'coin_gecko.json'
+filepath = f'/home/airflow/gcs/data/{filename}'
+
+def download_currency_data(filename: str) -&gt; None:
+    import pandas as pd     # importing within the function is required for PythonVirtualenvOperator
+    import requests
+    url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&amp;order=market_cap_desc&amp;per_page=100&amp;page=1&amp;sparkline=false'
+    result = requests.get(url)
+    result.raise_for_status()   # raise an exception if bad response returned
+    data = result.json()
+    df = pd.DataFrame(data)
+    df.to_json(filename, orient='records', lines=True)  # saving as JSON Lines file
+
+t_download_currency_data = PythonVirtualenvOperator(
+    Task_id=&quot;download_currency_data&quot;,
+    python_version=&quot;3&quot;,
+    requirements=[&quot;requests==2.7.0&quot;, &quot;pandas==1.1.3&quot;],
+    python_callable=download_currency_data,
+    op_kwargs={&quot;filename&quot;: filepath},
+    dag=dag,
+)
+</code></pre>
+<h4 id="task-2-copy-the-file-to-gcs">Task 2: Copy the File to GCS</h4>
+<p>Now that we have the file saved "locally", we need to move it to the designated GCS folder that will act as our Data Lake. We are putting the file inside the "de-book-bitcoin-web-data" Bucket we created above. </p>
+<p>We're using the strange syntax <code>{{{{ ds_nodash }}}}</code> in the path name. This refers to an Airflow <a href="https://airflow.apache.org/docs/stable/macros-ref.html">macro</a>, which is basically string interpolation within the Airflow DAG context. In this case, it is being used to provide the execution date of the DAG in the format YYYMMDD. While using Python's <code>datetime.date.today()</code> can be useful in some circumstances, it can also be problematic as it is evaluated at the time each Task is run. So if there is a date change between one Task and the next your value for today's date will change. Using the DAG execution date can be tricky, too, as the execution date for a manually run DAG is surprisingly different than when the DAG is executed on a schedule. All that is to say: if you need to dynamically generate a date for a Task, be thoughtful and careful.</p>
+<pre><code class="language-python">t_save_file_to_gcs = BashOperator(
+    task_id=&quot;save_file_to_gcs&quot;,
+    bash_command=f&quot;gsutil cp {filepath} gs://de-book-bitcoin-web-data/coingecko/dt={{{{ ds_nodash }}}}/coin_gecko_{time.time()}.json&quot;,
+    dag=dag
+)
+t_save_file_to_gcs.set_upstream(t_download_currency_data)
+</code></pre>
+<p>We're using the <code>set_upstream()</code> method after each Task to define Task dependencies.</p>
+<h4 id="task-3-load-the-data-into-bigquery">Task 3: Load the Data into BigQuery</h4>
+<p>As I mentioned in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4</a>, the <code>bq load</code> command can be used to create a table if one does not already exist. So we do not need to create a separate Task for creating the table. However, we'll still need to specify a schema:</p>
+<pre><code class="language-json">[
+    {
+        &quot;name&quot;: &quot;id&quot;,
+        &quot;type&quot;: &quot;STRING&quot;,
+        &quot;mode&quot;: &quot;REQUIRED&quot;
+    },
+    {
+        &quot;name&quot;: &quot;symbol&quot;,
+        &quot;type&quot;: &quot;STRING&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;name&quot;,
+        &quot;type&quot;: &quot;STRING&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;image&quot;,
+        &quot;type&quot;: &quot;STRING&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;current_price&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;market_cap&quot;,
+        &quot;type&quot;: &quot;INT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;market_cap_rank&quot;,
+        &quot;type&quot;: &quot;INT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;fully_diluted_valuation&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;total_volume&quot;,
+        &quot;type&quot;: &quot;INT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;high_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;low_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;price_change_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;price_change_percentage_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;market_cap_change_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;market_cap_change_percentage_24h&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;circulating_supply&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;total_supply&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;max_supply&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;ath&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;ath_change_percentage&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;ath_date&quot;,
+        &quot;type&quot;: &quot;TIMESTAMP&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;atl&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;atl_change_percentage&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;atl_date&quot;,
+        &quot;type&quot;: &quot;TIMESTAMP&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    },
+    {
+        &quot;name&quot;: &quot;roi&quot;,
+        &quot;type&quot;: &quot;RECORD&quot;,
+        &quot;mode&quot;: &quot;REPEATED&quot;,
+        &quot;fields&quot;: [
+            {
+                &quot;name&quot;: &quot;times&quot;,
+                &quot;type&quot;: &quot;FLOAT64&quot;,
+                &quot;mode&quot;: &quot;NULLABLE&quot;
+            }, 
+            {
+                &quot;name&quot;: &quot;currency&quot;,
+                &quot;type&quot;: &quot;STRING&quot;,
+                &quot;mode&quot;: &quot;NULLABLE&quot;
+            }, 
+            {
+                &quot;name&quot;: &quot;percentage&quot;,
+                &quot;type&quot;: &quot;FLOAT64&quot;,
+                &quot;mode&quot;: &quot;NULLABLE&quot;
+            }
+        ]
+    },
+    {
+        &quot;name&quot;: &quot;last_updated&quot;,
+        &quot;type&quot;: &quot;TIMESTAMP&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;
+    }
+
+]
+</code></pre>
+<p>We'll set up our table to be partitioned by the <code>last_updated</code> field, so that it will be easy to filter our data by the date it was updated. The web API is supposed to update once per day, and our DAG runs once per day, so in theory we shouldn't be getting any duplicates. In practice, we need to plan for the possibility that we have duplicate data getting into our <code>bitcoin_landing.currencies</code> table. That'll be taken care of in the final Task. </p>
+<p>Now let's load our data:</p>
+<pre><code class="language-python">t_load_data_into_bq = BashOperator(
+    task_id=&quot;load_data_into_bq&quot;,
+    bash_command=f&quot;&quot;&quot;
+        bq load \\
+           --source_format=NEWLINE_DELIMITED_JSON \\
+           --time_partitioning_type=DAY \\
+           --time_partitioning_field last_updated \\
+           bitcoin_landing.currencies \\
+           &quot;gs://de-book-bitcoin-web-data/coingecko/dt={{{{ ds_nodash }}}}/*.json&quot; \\
+           /home/airflow/gcs/dags/schemas/coin_gecko_schema.json
+    &quot;&quot;&quot;,
+    dag=dag
+)
+t_load_data_into_bq.set_upstream(t_save_file_to_gcs)
+</code></pre>
+<p>When designating the source location we use <code>*.json</code> to indicate we will be loading all JSON files in that sub-folder in this operation. While we would usually only expect a single file in there, it's possible multiple source files will be generated in a single day. We don't have to worry about loading the data multiple times, because we're already removing duplicate entries as part of our pipeline in the final Task. We can't specify the specific filename in this Task because it was dynamically generated in the previous Task using the <code>time.time()</code> function. If we tried to reference the file name again using the <code>time.time()</code> function the file name will change, and this <code>bq load</code> will be unable to find the source file.</p>
+<h4 id="task-4-create-the-destination-table">Task 4: Create the Destination Table</h4>
+<p>In Task 3 when we loaded the data into BigQuery we didn't create the table first because the <code>bq load</code> operation took care of table creation for us. For the <code>bitcoin_mart.currencies</code> table we are creating the table first, because the final Task to remove duplicate entries will require SQL code that references this table. If the table doesn't exist first then the query will fail, and so will the Task. While this is only an issue on the first time the fifth Task is run, having the table creation Task in the DAG does no harm, even if it's not needed on subsequent runs. The <code>--force</code> flag is used to ignore errors if the table already exists (i causes BigQuery to ignore the <code>bq mk</code> command).</p>
+<p>Note that we're not using the <code>set_upstream()</code> method for this Task. This Task can be run independently of the other Tasks, so it does not depend on any other Tasks being complete first.</p>
+<pre><code class="language-python">t_create_currencies_table = BashOperator(
+    task_id=&quot;create_currencies_table&quot;,
+    bash_command=&quot;&quot;&quot;
+        bq mk \\
+            --force \\
+            bitcoin_mart.currencies \\
+            /home/airflow/gcs/dags/schemas/coin_gecko_schema.json
+    &quot;&quot;&quot;,
+    dag=dag
+)
+</code></pre>
+<h4 id="task-5-load-data-into-the-final-table">Task 5: Load Data into the Final Table</h4>
+<p>The <code>currencies</code> table that we are exposing to our users shouldn't have duplicate records in it. We can remove the duplicates with a simple SQL query:</p>
+<pre><code class="language-sql">with numbered as (
+select *,
+  row_number() over(partition by id order by last_updated desc) as rn
+from bitcoin_landing.currencies
+)
+select * except(rn)
+from numbered
+where rn=1;
+</code></pre>
+<p>Now we just need to create our final table based on that query:</p>
+<pre><code class="language-python">t_update_currencies_table = BashOperator(
+    task_id=&quot;update_currencies_table&quot;,
+    bash_command=&quot;&quot;&quot;
+    cat /home/airflow/gcs/dags/sql/bitcoin_mart/currencies.sql | bq --headless query \\
+        --destination_table=bitcoin_mart.currencies \\
+        --use_legacy_sql=false \\
+        --replace
+    &quot;&quot;&quot;,
+    dag=dag
+)
+t_update_currencies_table.set_upstream([t_create_currencies_table, t_load_data_into_bq])
+</code></pre>
+<p>Note that we have set both the third and fourth Tasks as dependencies for this final Task.</p>
+<h3 id="organizing-the-dag">Organizing the DAG</h3>
+<p>Now that we've got our Tasks straightened out, the last piece of code is the instantiation of the DAG:</p>
+<pre><code class="language-python">default_args = {
+    'owner': 'DE Book',
+    'depends_on_past': False,
+    'email': [''],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 3,
+    'retry_delay': datetime.timedelta(seconds=30),
+    'start_date': datetime.datetime(2020, 10, 17),
+}
+
+dag = DAG(
+    'coin_gecko',
+    schedule_interval=&quot;0 0 * * *&quot;,      # run every day at midnight UTC
+    max_active_runs=1,                  # only let 1 instance run at a time
+    catchup=False,                      # if a scheduled run is missed, skip it
+    default_args=default_args
+)
+</code></pre>
+<p>The <code>schedule_interval="0 * * * *"</code> refers to how often it should run, using <a href="https://devhints.io/cron">cron syntax</a>. Also note that if a Task fails in this DAG, Airflow will re-run the Task three times before marking the Task as failed.</p>
+<p>Now we have all the pieces. This is what our entire DAG file looks like:</p>
+<pre><code class="language-python">import time
+import datetime
+
+from airflow import DAG
+from airflow.operators.bash_operator import BashOperator
+from airflow.operators.python_operator import PythonVirtualenvOperator
+
+default_args = {
+    'owner': 'DE Book',
+    'depends_on_past': False,
+    'email': [''],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 3,
+    'retry_delay': datetime.timedelta(seconds=30),
+    'start_date': datetime.datetime(2020, 10, 17),
+}
+
+dag = DAG(
+    'coin_gecko',
+    schedule_interval=&quot;0 0 * * *&quot;,   # run every day at midnight UTC
+    max_active_runs=1,
+    catchup=False,
+    default_args=default_args
+)
+filename = 'coin_gecko.json'
+filepath = f'/home/airflow/gcs/data/{filename}'
+
+
+def download_currency_data(filename: str) -&gt; None:
+    import pandas as pd     # importing within the function is required for PythonVirtualenvOperator
+    import requests
+    url = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&amp;order=market_cap_desc&amp;per_page=100&amp;page=1&amp;sparkline=false'
+    result = requests.get(url)
+    result.raise_for_status()   # raise an exception if bad response returned
+    data = result.json()
+    df = pd.DataFrame(data)
+    df.to_json(filename, orient='records', lines=True)  # saving as JSON lines file
+
+
+t_download_currency_data = PythonVirtualenvOperator(
+    task_id=&quot;download_currency_data&quot;,
+    python_version=&quot;3&quot;,
+    requirements=[&quot;requests==2.7.0&quot;, &quot;pandas==1.1.3&quot;],
+    python_callable=download_currency_data,
+    op_kwargs={&quot;filename&quot;: filepath},
+    dag=dag
+)
+
+
+t_save_file_to_gcs = BashOperator(
+    task_id=&quot;save_file_to_gcs&quot;,
+    bash_command=f&quot;gsutil cp {filepath} gs://de-book-bitcoin-web-data/coingecko/dt={{{{ ds_nodash }}}}/coin_gecko_{time.time()}.json&quot;,
+    dag=dag
+)
+t_save_file_to_gcs.set_upstream(t_download_currency_data)
+
+
+t_load_data_into_bq = BashOperator(
+    task_id=&quot;load_data_into_bq&quot;,
+    bash_command=&quot;&quot;&quot;
+        bq load \\
+           --source_format=NEWLINE_DELIMITED_JSON \\
+           --time_partitioning_type=DAY \\
+           --time_partitioning_field last_updated \\
+           bitcoin_landing.currencies \\
+           &quot;gs://de-book-bitcoin-web-data/coingecko/dt={{ ds_nodash }}/*.json&quot; \\
+           /home/airflow/gcs/dags/schemas/coin_gecko_schema.json
+    &quot;&quot;&quot;,
+    dag=dag
+)
+t_load_data_into_bq.set_upstream(t_save_file_to_gcs)
+
+
+t_create_currencies_table = BashOperator(
+    task_id=&quot;create_currencies_table&quot;,
+    bash_command=&quot;&quot;&quot;
+        bq mk \\
+            --force \\
+            bitcoin_mart.currencies \\
+            /home/airflow/gcs/dags/schemas/coin_gecko_schema.json
+    &quot;&quot;&quot;,
+    dag=dag
+)
+
+
+t_update_currencies_table = BashOperator(
+    task_id=&quot;update_currencies_table&quot;,
+    bash_command=&quot;&quot;&quot;
+    cat /home/airflow/gcs/dags/sql/bitcoin_mart/currencies.sql | bq --headless query \\
+        --destination_table=bitcoin_mart.currencies \\
+        --use_legacy_sql=false \\
+        --replace
+    &quot;&quot;&quot;,
+    dag=dag
+)
+t_update_currencies_table.set_upstream([t_create_currencies_table, t_load_data_into_bq])
+
+</code></pre>
+<h3 id="deploying-and-running-the-dag">Deploying and Running the DAG</h3>
+<p>So now we have our DAG file (<code>coin_gecko.py</code>), our schema file (<code>coin_gecko_schema.json</code>) and our sql file (<code>currencies.sql</code>). Our next step is to get them deployed to Composer. We'll talk about deployment pipelines in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12</a>, but for now we can deploy through the command line:</p>
+<pre><code class="language-bash">&gt; gcloud composer environments storage dags import \
+    --environment bitcoin-dev \
+    --location us-central1 \
+    --source coin_gecko.py
+</code></pre>
+<p>To deploy our JSON and SQL files we'll need to identify the name of the Bucket. Once we know that we can copy our files over:</p>
+<pre><code class="language-bash">&gt; gcloud composer environments describe bitcoin-dev \
+    --location us-central1 \
+    --format=&quot;get(config.dagGcsPrefix)&quot;
+gs://us-central1-bitcoin-dev-123abc-bucket/dags
+
+&gt; gsutil cp coin_gecko_schema.json gs://us-central1-bitcoin-dev-3d3132eb-bucket/dags/schemas/
+&gt; gsutil cp currencies.sql gs://us-central1-bitcoin-dev-3d3132eb-bucket/dags/sql/bitcoin_mart/
+</code></pre>
+<p>We can see our Composer Environment running on the <a href="https://console.cloud.google.com/composer/environments">GCP Console</a>. Click the "Airflow" link to launch the webserver:</p>
+<p><img alt="Composer Console" src="../images/composer_console.png" /></p>
+<p>We can now see our "coin_gecko" DAG. It's scheduled to run at midnight UTC, but should have run once automatically after it was deployed. We can also force it to run by clicking the "Trigger Dag" button.</p>
+<p><img alt="Airflow Web UI" src="../images/airflow_web_ui_2.png" /></p>
+<p>By clicking on the DAG name we can see a history of the status of the various Tasks. Clicking on the "Graph View" allows us to see the most recent DAG run:</p>
+<p><img alt="Airflow DAG Graph" src="../images/airflow_dag_graph.png" /></p>
+<p>We can see that our Tasks completed, so let's take a look at <a href="https://console.cloud.google.com/bigquery">BigQuery in the GCP Console</a> to verify our tables are there. We can see and click on our Datasets and tables on the left to get details about them. When a table is selected you can select the "Preview" button to see the data.</p>
+<p><img alt="BigQuery Console" src="../images/bigquery_console_1.png" /></p>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>In this chapter we created a Composer Environment and it's associated Buckets, two BigQuery datasets, and a GCS Bucket for storing our source data. I've explained how to take these down in previous chapters, but here it is again all together:</p>
+<p>Deleting the composer instance:</p>
+<pre><code class="language-bash">&gt; gcloud composer environments delete bitcoin-dev --location us-central1
+</code></pre>
+<p>Identifying and deleting the GCS Buckets:</p>
+<pre><code class="language-bash">&gt; gsutil list
+gs://de-book-bitcoin-web-data/
+gs://us-central1-bitcoin-dev-3d3132eb-bucket/
+
+&gt; gsutil rm -r gs://de-book-bitcoin-web-data/
+&gt; gsutil rm -r gs://us-central1-bitcoin-dev-3d3132eb-bucket/
+</code></pre>
+<p>Finally, let's get rid of our datasets:</p>
+<pre><code class="language-bash">&gt; bq rm -d -r bitcoin_landing
+&gt; bq rm -d -r bitcoin_mart
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_04_data_warehouse/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 4: Building a Data Warehouse with BigQuery
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_06_event_triggers/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

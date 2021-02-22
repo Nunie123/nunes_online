@@ -1,0 +1,1035 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 12: Monitoring and Alerting - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 12: Monitoring and Alerting
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 12: Monitoring and Alerting
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 12: Monitoring and Alerting
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<strong>Chapter 12: Monitoring and Alerting</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-12-monitoring-and-alerting"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12</a>: Monitoring and Alerting</h1>
+<p>We've spent 11 chapters in this book going over how to set up your infrastructure. But that doesn't do us much good if everything breaks and you don't fix it. There will be problems, whether with your code, or a GCP outage, or a malformed file. It's our responsibility as data engineers to quickly identify when there's a problem and give ourselves as much information as we can to fix the issue.</p>
+<p>Conveniently, GCP provides dashboard for each of its services, so we can easily monitor the health of our infrastructure and make adjustments as needed. While the monitoring dashboards are automatically set up for you and can be easily customized through the console, you'll be responsible for setting up your own alerts. Consequently, this Chapter is going to be focused on setting Alerts, but you can check out GCP's <a href="https://console.cloud.google.com/monitoring">Monitoring Service</a> for setting up monitoring dashboards.</p>
+<p>In this chapter we're going to set up alerting on a Composer (Airflow) instance, and on a deployment pipeline. We'll be using Airflow's built-in alerting functionality for failed Tasks, and rolling our own alerting functionality for the Cloud Build deployment pipeline. There's lots of places you can send alerts, such as BigQuery, Pub/Sub, or GCS, but in this chapter we'll be sending our alerts to a Slack channel.</p>
+<p>While we're only covering alerting for two pieces of infrastructure in this chapter, you should set up alerting for all of your critical infrastructure in a production environment. In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13</a> we'll be setting up a complete infrastructure, including alerting for all our critical systems, so check that out if you want to see how alerting is done on other tools, such as DataProc.</p>
+<p>Specifically what we're going to do in this chapter is:
+1. Instantiate a Composer Environment.
+2. Create a Slack workspace.
+3. Create a deployment pipeline.
+4. Create DAGs with custom alerting.
+5. Create alerting on our deployment pipeline.
+6. Deploy a DAG and see how the alerts work.</p>
+<p>Many of these steps were just covered in the last chapter (Chapter 11), so I'll be brief on the details. Please refer to <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> if you want a more detailed explanation of how to set up a deployment pipeline, and Chapters 2 and 5 for more details on setting up a Composer Environment.</p>
+<h2 id="starting-a-composer-environment">Starting a Composer Environment</h2>
+<p>This command should be pretty familiar to you by now. We do this first because it'll take awhile for GCP to set up our instance.</p>
+<pre><code class="language-bash">&gt; gcloud composer environments create my-environment \
+    --location us-central1 \
+    --zone us-central1-f \
+    --machine-type n1-standard-1 \
+    --image-version composer-1.12.2-airflow-1.10.10 \
+    --python-version 3 \
+    --node-count 3 \
+    --service-account composer-dev@de-book-dev.iam.gserviceaccount.com 
+</code></pre>
+<p>In a production setting we would create this Composer Environment using Terraform, discussed in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a>.</p>
+<h2 id="create-a-slack-workspace">Create a Slack Workspace</h2>
+<p>We need to send the alerts somewhere that will catch the eye of the data engineering team, so Slack is a good choice. Slack has a pretty intuitive setup process, and creating a workspace is free. So go <a href="https://slack.com/create">here</a> to create your workspace. </p>
+<p>Once you've got your new slack workspace set up go <a href="https://api.slack.com/messaging/webhooks">here</a> to set up incoming webhooks, which will allow you to post messages to Slack through an HTTP POST request.</p>
+<p>The URL you've just generated should be kept secret (so that random strangers can't post messages to your Slack channels). Consequently, we're going to add it to Google Secret Manager, discussed in more detail in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a>.</p>
+<pre><code class="language-Bash">&gt; echo -n &quot;https://hooks.slack.com/services/QWERTY/ASDFG/123456&quot; | gcloud secrets create slack_webhook --data-file=-
+</code></pre>
+<p>Replace the above string with the incoming webhook URL indicated by Slack for your account.</p>
+<h2 id="create-a-deployment-pipeline">Create a Deployment Pipeline</h2>
+<p>Just like last chapter, we'll need to create a GitHub repository and link it to our GCP account. Rather than just repeating that whole section in this chapter, you should go <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md#create-a-github-repo-and-connect-it-to-gcp">read that section from [Chapter 11: Deployment Pipelines with Cloud Build](https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md)</a>.</p>
+<p>Now that we have our GitHub Repo connected to GCP, we need to clone the repo to our local machine:</p>
+<pre><code class="language-Bash">&gt; git clone https://github.com/Nunie123/gcp_alerting_test.git
+Cloning into 'gcp_alerting_test'...
+warning: You appear to have cloned an empty repository.
+&gt; cd gcp_alerting_test/
+</code></pre>
+<p>Let's build our file structure and (empty) files:</p>
+<pre><code class="language-Bash">&gt; touch cloudbuild.yaml
+&gt; touch requirements.txt
+&gt; mkdir dags
+&gt; cd dags
+&gt; mkdir python_scripts
+&gt; mkdir tests
+&gt; touch my_dag.py
+&gt; touch python_scripts/my_script.py
+&gt; touch tests/test_python_scripts.py
+</code></pre>
+<p>Before we can fill in our <code>cloudbuild.yaml</code> file we'll need the bucket name Composer will use to look for our DAGs:</p>
+<pre><code class="language-Bash">&gt; gcloud composer environments describe my-environment \
+    --location us-central1 \
+    --format=&quot;get(config.dagGcsPrefix)&quot;
+gs://us-central1-my-environment-9567c0a7-bucket/dags
+</code></pre>
+<p>Note that you may need to wait for your Composer Environment to finish building before the above command will work.</p>
+<p>Now we can write our <code>cloudbuild.yaml</code> file:</p>
+<pre><code class="language-YAML"># cloudbuild.yaml
+steps:
+- name: 'docker.io/library/python:3.7'
+  id: Test
+  entrypoint: /bin/sh
+  args: [-c, 'python -m unittest dags/tests/test_python_scripts.py']
+- name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  id: Deploy
+  entrypoint: bash
+  args: [ '-c', 'gsutil -m rsync -d -r ./dags gs://${_COMPOSER_BUCKET}/dags']
+substitutions:
+    _COMPOSER_BUCKET: us-central1-my-environment-9567c0a7-bucket
+</code></pre>
+<p>Finally, let's deploy our Cloud Build Trigger to GCP:</p>
+<pre><code class="language-Bash">&gt; gcloud beta builds triggers create github \
+    --repo-name=gcp_alerting_test \
+    --repo-owner=Nunie123 \
+    --branch-pattern=&quot;master&quot; \
+    --build-config=cloudbuild.yaml
+</code></pre>
+<p>Everything we did in this section was described in more detail in the previous chapter, so check out <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> if you want to know a bit more about what we just did.</p>
+<h2 id="create-dags-with-custom-alerting">Create DAGs with Custom Alerting</h2>
+<p>We're going to need to use the <code>requests</code> and <code>google-cloud-secret-manager</code> libraries to send messages to our Slack workspace. Let's add these packages to our Composer Environment. First, let's fill in the requirements.txt file in the top level of our repo:</p>
+<pre><code class="language-text">requests
+google-cloud-secret-manager
+</code></pre>
+<p>Now let's update our Composer Environment:</p>
+<pre><code class="language-Bash">&gt; gcloud composer environments update my-environment \
+    --update-pypi-packages-from-file requirements.txt \
+    --location us-central1
+</code></pre>
+<p>While you're waiting for this to complete we can carry on filling out our files. We just need this to complete before we push our code to our repo.</p>
+<p>Now that we've taken care of our Python dependencies, let's make a DAG that will run a custom alert whenever a task fails. We do this with the <code>on_error_callback</code> option, which can be set at the DAG or Task level and indicates a function that will be executed when a task fails. This function can do anything, but we're going to make the callback function send a message to Slack.</p>
+<pre><code class="language-Python"># my_dag.py
+import datetime
+import textwrap
+
+import requests
+from google.cloud import secretmanager
+from airflow import DAG
+from airflow.operators.python_operator import PythonOperator
+
+from python_scripts import my_script
+
+def get_secret(project, secret_name, version):
+    client = secretmanager.SecretManagerServiceClient()
+    secret_path = client.secret_version_path(project, secret_name, version)
+    secret = client.access_secret_version(secret_path)
+    return secret.payload.data.decode(&quot;UTF-8&quot;)
+
+def send_error_to_slack(context):
+    webhook_url = get_secret('de-book-dev', 'slack_webhook', 'latest')
+    message = textwrap.dedent(f&quot;&quot;&quot;\
+            :red_circle: Task Failed.
+            *Dag*: {context.get('task_instance').dag_id}
+            *Task*: &lt;{context.get('task_instance').log_url}|*{context.get('task_instance').task_id}*&gt;&quot;&quot;&quot;)
+    message_json = dict(text=message)
+    requests.post(webhook_url, json=message_json)
+
+default_args = {
+    'owner': 'DE Book',
+    'depends_on_past': False,
+    'email': [''],
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': datetime.timedelta(seconds=30),
+    'start_date': datetime.datetime(2020, 10, 17),
+    'on_error_callback': send_error_to_slack,
+}
+
+dag = DAG(
+    'my_dag',
+    schedule_interval=&quot;0 0 * * *&quot;,   # run every day at midnight UTC
+    max_active_runs=1,
+    catchup=False,
+    default_args=default_args
+)
+
+t_run_my_script = PythonOperator(
+    task_id=&quot;run_my_script&quot;,
+    python_callable=my_script.fail_sometimes,
+    on_failure_callback=send_error_to_slack,
+    dag=dag
+)
+</code></pre>
+<p>Let's create our Python function for our Task. We'll make it work for now, and will edit it in the Testing Our Alerts section to see what happens when an Exception is raised.</p>
+<pre><code class="language-Python"># my_script.py
+def fail_sometimes():
+    # div_by_zero = 1/0
+    return 'No Exception!'
+</code></pre>
+<p>Finally, let's create our test. Like above, we'll make the test pass for now, but will edit it to fail in the Testing Our Alerts section.</p>
+<pre><code class="language-Python"># test_python_scripts.py
+import unittest
+
+class TestScripts(unittest.TestCase):
+
+    def test_script(self):
+        self.assertTrue(1==1)
+        # self.assertTrue(1==0)
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<p>In this section we created alerts directly in Airflow. In the next section we'll use GCP-specific tools.</p>
+<h2 id="add-alerts-to-the-deployment-pipeline">Add Alerts to the Deployment Pipeline</h2>
+<p>To get deployment notifications to Slack we are going to rely on Cloud Build, Pub/Sub, and Cloud Functions. The process looks like this:
+1. We push code changes to our GitHub repository.
+2. Cloud Build executes our tests and deploys our code to GCP.
+3. Cloud Build then publishes the outcome of its actions (e.g. success or failure of the deployment) to a Pub/Sub Topic.
+4. This triggers a Cloud Function which sends our alerts to Slack.</p>
+<p>The only magic in this process is Cloud Build automatically publishing to a Pub/Sub topic. We have to build all the other steps, but we've already covered all these tools previously in this book.</p>
+<p>We already set up Cloud Build, above, so let's create our Pub/Sub Topic. I cover Pub/Sub topics in more detail in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a>.</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub topics create cloud-builds
+</code></pre>
+<p>The name of the Topic must be <code>cloud-builds</code> so that Cloud Build knows where to publish.</p>
+<p>Now for the last piece, our Cloud Function. I covered Cloud Functions in more detail in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6</a>. </p>
+<p>At the top level of the repository we created for our Airflow DAGs, lets create our function files:</p>
+<pre><code class="language-Bash">&gt; mkdir functions
+&gt; mkdir functions/send-to-slack
+&gt; touch functions/send-to-slack/main.py
+&gt; touch functions/send-to-slack/requirements.txt
+</code></pre>
+<p>Now we are basically re-implementing the alerting function we used for our Airflow Task, above. We'll start with our requirements file, as we'll need Secrets Manager to get the Slack endpoint, and we'll need the <code>requests</code> library to send our HTTP Post request.</p>
+<p>requirements.txt:</p>
+<pre><code class="language-Text">requests
+google-cloud-secret-manager
+</code></pre>
+<p>main.py:</p>
+<pre><code class="language-Python">def send_to_slack(event, context):
+    import requests
+    from google.cloud import secretmanager
+
+    client = secretmanager.SecretManagerServiceClient()
+    name = &quot;projects/204024561480/secrets/slack_webhook/versions/latest&quot;
+    response = client.access_secret_version(request={&quot;name&quot;: name})
+    webhook_url = response.payload.data.decode(&quot;UTF-8&quot;)
+
+    build_status = event.get('attributes').get('status')
+    build_id = event.get('attributes').get('buildId')
+    if build_status == 'SUCCESS':
+        slack_text = f':large_green_circle: Cloud Build Success for {build_id}'
+    elif build_status == 'FAILURE'::
+        slack_text = f':red_circle: ATTENTION! Cloud Build {build_id} did not succeed. Status is {build_status}.'
+    slack_message = dict(text=slack_text)
+    requests.post(webhook_url, json=slack_message)
+</code></pre>
+<p>To get the fully specified name of your secret (<code>projects/204024561480/secrets/slack_webhook/versions/latest</code> above) execute:</p>
+<pre><code class="language-Bash">&gt; gcloud secrets versions describe latest --secret=slack_webhook
+createTime: '2021-02-01T01:07:29.214017Z'
+name: projects/204024561480/secrets/slack_webhook/versions/1
+replicationStatus:
+  automatic: {}
+state: ENABLED
+</code></pre>
+<p>Now let's deploy our function. In a production environment we would just add another step to our <code>cloudbuild.yaml</code> file we created above, but we want to see our alerts on our first push to our repo, so we'll deploy them manually right now. Navigate to the <code>send-to-slack</code> folder and execute:</p>
+<pre><code class="language-Bash">&gt; gcloud functions deploy send_to_slack \
+    --runtime python37 \
+    --trigger-topic cloud-builds \
+    --service-account composer-dev@de-book-dev.iam.gserviceaccount.com 
+</code></pre>
+<p>I used my <code>composer-dev@de-book-dev.iam.gserviceaccount.com</code> service account I created back in Chapter 1. You can find yours by executing:</p>
+<pre><code class="language-bash">&gt; gcloud iam service-accounts list
+DISPLAY NAME                            EMAIL                                               DISABLED
+composer-dev                            composer-dev@de-book-dev.iam.gserviceaccount.com    False
+Compute Engine default service account  204024561480-compute@developer.gserviceaccount.com  False
+</code></pre>
+<p>Because our Cloud Function will be accessing Secret Manager we'll need to make sure out service account can also access secrets.</p>
+<pre><code class="language-bash">&gt; gcloud projects add-iam-policy-binding 'de-book-dev' \
+    --member='serviceAccount:composer-dev@de-book-dev.iam.gserviceaccount.com' \
+    --role='roles/secretmanager.admin'
+</code></pre>
+<p>That's it. Deployment messages will now be sent to our Slack workspace. In the next section we'll see it in action.</p>
+<h2 id="testing-our-alerts">Testing our Alerts</h2>
+<p>Now we have two alerts set up. One will send an alert if a Task fails. The other will send an alert whenever there's a deployment. So let's start by deploying our code and seeing a Slack alert notifying us whether the deploy was successful. As we talked about in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a>, we kick off our deploy process by pushing our code to GitHub:</p>
+<pre><code class="language-Bash">&gt; git status
+&gt; git add --all
+&gt; git commit -m 'Initial commit of alerting test code'
+&gt; git push
+</code></pre>
+<p>It'll take a moment for your deployment process to finish. You can monitor your deployment process from your repo in GitHub, or from the GCP Cloud Build console. But pretty soon you'll be getting a message letting you know your deployment succeeded.</p>
+<p>Let's update our unit test so that our deployment fails:</p>
+<pre><code class="language-Python"># test_python_scripts.py
+import unittest
+
+class TestScripts(unittest.TestCase):
+
+    def test_script(self):
+        self.assertTrue(1==1)
+        self.assertTrue(1==0) # This will cause an exception
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<p>Now when we deploy our code we will see a failure notification in Slack:</p>
+<pre><code class="language-Bash">&gt; git status
+&gt; git add --all
+&gt; git commit -m 'Making unit test fail'
+&gt; git push
+</code></pre>
+<p>We are now alerted when our deployments succeed or fail. Let's test our Airflow alerting for when a Task fails.</p>
+<p>First we'll fix our unit test:</p>
+<pre><code class="language-Python"># test_python_scripts.py
+import unittest
+
+class TestScripts(unittest.TestCase):
+
+    def test_script(self):
+        self.assertTrue(1==1)
+        # self.assertTrue(1==0)
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+<p>Now lets update the script our DAG runs so that it raises an exception:</p>
+<pre><code class="language-Python"># my_script.py
+def fail_sometimes():
+    div_by_zero = 1/0   # This will raise an exception
+    return 'No Exception!'
+</code></pre>
+<p>Let's deploy our changes:</p>
+<pre><code class="language-Bash">&gt; git status
+&gt; git add --all
+&gt; git commit -m 'Making Airflow Task fail'
+&gt; git push
+</code></pre>
+<p>Now let's visit our Airflow Web UI to trigger our DAG. We can find the web address by executing:</p>
+<pre><code class="language-Bash">&gt; gcloud composer environments describe my-environment \
+    --location us-central1 \
+    --format=&quot;get(config.airflowUri)&quot;
+https://ic1434f8836d84236p-tp.appspot.com
+</code></pre>
+<p>Let's trigger the DAG (check out <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a> for more details on interacting with the Airflow UI). Our task will retry once. When it fails on it's second try it will send us an alert in Slack.</p>
+<h2 id="wrapping-up">Wrapping Up</h2>
+<p>We did a lot in this chapter. We set up a Composer Environment, a DAG, a Cloud Function, a Cloud Build Trigger, a Secret, and a Pub/Sub Topic. Hopefully you feel pretty good about how your knowledge has grown over this book such that you're able to tie multiple GCP services together to build your infrastructure. </p>
+<p>This is the last chapter in this book where we will be introducing new tools. While there is a lot more we could have talked about on GCP, you should now have a good understanding of the major components of a typical data engineering stack, and how to stand those components up using GCP.</p>
+<p>The next chapter, <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13</a>, will go over how to get a complete Data Engineering infrastructure up and running.</p>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>We used a lot of different GCP services in this chapter, so let's start taking them down.</p>
+<p>We'll begin with finding the bucket for our Composer Environment and deleting it:</p>
+<pre><code class="language-Bash">&gt; gcloud composer environments describe my-environment \
+    --location us-central1 \
+    --format=&quot;get(config.dagGcsPrefix)&quot;
+gs://us-central1-my-environment-9567c0a7-bucket/dags
+&gt; gsutil rm -r gs://us-central1-my-environment-9567c0a7-bucket
+</code></pre>
+<p>Now we can delete the Composer Environment:</p>
+<pre><code class="language-bash">&gt; gcloud composer environments delete my-environment --location us-central1
+</code></pre>
+<p>That's going to take awhile, so let's go to a new terminal session and delete our Cloud Function:</p>
+<pre><code class="language-bash">&gt; gcloud functions delete send_to_slack
+</code></pre>
+<p>We can delete our Pub/Sub Topic:</p>
+<pre><code class="language-Bash">&gt; gcloud pubsub topics delete cloud-builds
+</code></pre>
+<p>And our Secret:</p>
+<pre><code class="language-Bash">&gt; gcloud secrets delete slack_webhook
+</code></pre>
+<p>Finally, let's delete our Cloud Build Trigger:</p>
+<pre><code class="language-Bash">&gt; gcloud beta builds triggers list
+---
+createTime: '2021-01-23T14:15:19.273898053Z'
+filename: cloudbuild.yaml
+github:
+  name: cloud-build-test
+  owner: Nunie123
+  push:
+    branch: master
+id: 53042473-7323-471d-817d-a8e59939d84a
+name: trigger
+&gt; gcloud beta builds triggers delete trigger
+</code></pre>
+<p>In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> I showed you how to delete your GitHub repository. See the instructions there if you want to delete the repo we made in this chapter.</p>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_11_deployment_pipelines/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 11: Deployment Pipelines with Cloud Build
+              </div>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

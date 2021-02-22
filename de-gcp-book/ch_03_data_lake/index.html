@@ -1,0 +1,841 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 3: Building a Data Lake with Google Cloud Storage (GCS) - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_04_data_warehouse/" class="md-nav__link">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<strong>Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-3-building-a-data-lake-with-google-cloud-storage-gcs"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3</a> : Building a Data Lake with Google Cloud Storage (GCS)</h1>
+<p>GCS provides cheap and easily accessible storage for any type of file. It is quite similar to AWS Simple Storage Solution (S3), and even has dedicated commands to be interoperable with S3.</p>
+<h2 id="whats-a-data-lake">What's a Data Lake?</h2>
+<p>A Data Lake is a schemaless data repository used for storing source files in their native format. If you're completely unfamiliar with the concept, you can think of it as a folder where all the data you use is saved together.</p>
+<p>While a Data Warehouse imposes a schema on the data in the form of tables and relationships between tables (see <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4</a> for more information on Data Warehousing), a Data Lake imposes no schema on the data it stores. Some benefits are:
+1. It's easy to ingest source data if the entire ingestion process is just to save the data unedited from the source system.
+2. It ensures data is not lost as a result of data transformations. The original data is always accessible for downstream processing.</p>
+<p>Some drawbacks are:
+1. It's hard to query. The schemaless structure can make it difficult to understand how data relates to each other.
+2. It can be messy. Source system data may benefit from cleaning (de-duplication field value normalization, etc.)before it is used downstream.</p>
+<p>Technologies allowing users query Data Lakes directly continues to improve. While there may be some scenarios where it makes sense to use a Data Lake without a Data Warehouse, such as organizations that are focused purely on Machine Learning and are not using Data Engineers to support Analytics, it is more common for an organization to use a Data Lake and Data Warehouse together.</p>
+<p>While Data Lakes are generally considered to be schemaless, there is usually the ability to add some structure. Below we'll discuss how to use multiple GCS buckets and bucket sub-folders to organize our Data Lake.</p>
+<h2 id="using-gcs-as-a-data-lake">Using GCS as a Data Lake</h2>
+<p>GCS works well as a Data Lake because it is cheap, easy to access, and integrates well with other GCP services, particularly BigQuery. </p>
+<p>Every file saved in GCS is called an Object (also referred to as a "Blob"). Every Object is contained within a Bucket. Technically, every Object is saved at the top level of the Bucket. There is no hierarchical structure like would be used in a Windows or MacOS file system. However, GCS allows the Objects to be named as if they are in sub-directories, so for practical purposes we can save files in sub-directories inside a Bucket.</p>
+<p>You can manage GCS through the Console, the <code>gsutil</code> command line tool, through various code libraries, or through a REST API. I'll discuss <code>gsutil</code> and the Python library, since those integrate easiest with Airflow (I'll demonstrate using GCS with Airflow/Composer in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a>).</p>
+<h3 id="using-the-gsutil-command-line-tool">Using the <code>gsutil</code> command line tool</h3>
+<p>In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1</a>I discussed installing the GCP command line tools. You'll need them for this section.</p>
+<p>Creating a bucket is quite easy:</p>
+<pre><code class="language-bash">&gt; gsutil mb gs://de-book-dev
+</code></pre>
+<p>The name of a Bucket must be unique across all GCP accounts, so you may find that the Bucket name you want to use is not available.</p>
+<pre><code class="language-bash">&gt; gsutil mb gs://de-book-dev
+Creating gs://de-book-bucket/...
+ServiceException: 409 Bucket de-book-dev already exists.
+</code></pre>
+<p>We can see all our Buckets by running:</p>
+<pre><code class="language-bash">&gt; gsutil ls
+</code></pre>
+<p>Now let's create some files and then copy them into our Bucket:</p>
+<pre><code class="language-bash">&gt; mkdir files
+&gt; echo &quot;This is text&quot; &gt; ./files/a_text_file.txt
+&gt; echo '{&quot;this_is_json: true}' &gt; ./files/a_json_file.json
+&gt; gsutil cp ./files/a_text_file.txt gs://de-book-dev
+[...]
+&gt; gsutil cp -r ./files gs://de-book-dev
+[...]
+&gt; gsutil cp ./files/*.json gs://de-book-dev/json_files/
+[...]
+</code></pre>
+<p>The three <code>cp</code> commands above demonstrate:
+1. Copying a single file into a Bucket.
+2. Copying an entire directory into a Bucket.
+3. Copying all files with a ".json" extension into a Bucket's sub-directory.</p>
+<p>Let's take a look at the Bucket to make sure the Objects made it in:</p>
+<pre><code class="language-bash">&gt; gsutil ls gs://de-book-dev
+gs://de-book-dev/a_text_file.txt
+gs://de-book-dev/json_files/
+gs://de-book-dev/files/
+
+&gt; gsutil ls gs://de-book-dev/files
+gs://de-book-dev/files/a_json_file.json
+gs://de-book-dev/files/a_text_file.txt
+
+&gt; gsutil ls gs://de-book-dev/json_files
+gs://de-book-dev/json_files
+
+&gt; gsutil ls gs://de-book-dev/*
+[...]
+</code></pre>
+<p>We can just as easily use the <code>cp</code> command to download the files from GCS by switching the source and destination arguments in the examples above. The <code>cp</code> command can also be used to copy files between GCS buckets.</p>
+<p>The <a href="https://cloud.google.com/storage/docs/gsutil/commands/rm"><code>gsutil rm</code></a> and <a href="https://cloud.google.com/storage/docs/gsutil/commands/mv"><code>gsutil mv</code></a> commands, among <a href="https://cloud.google.com/storage/docs/gsutil/commands/help">others</a>, are also available for use.</p>
+<p>One command we should discuss that isn't based on a UNIX command like <code>cp</code> is the <a href="https://cloud.google.com/storage/docs/gsutil/commands/rsync"><code>gsutil rsync</code></a> command. Using <code>rsync</code> on a local folder will ensure that any file in that folder is also added to the designated Bucket, if it doesn't yet exist there:</p>
+<pre><code class="language-bash">&gt; gsutil rsync ./files gs://de-book-dev/synced_files/
+</code></pre>
+<p>Another nice feature of GCS is that you can use the <code>gsutil cp</code> and <code>gsutil rsync</code> commands directly with AWS S3:</p>
+<pre><code class="language-bash">&gt; gsutil cp s3://my-aws-bucket/some_file.txt gs://my-gcs-bucket
+</code></pre>
+<p>For this to work you'll need to make a Boto configuration file to manage your AWS credentials. Details are <a href="https://cloud.google.com/storage/docs/boto-gsutil">here</a>.</p>
+<h3 id="using-the-googlecloudstorage-python-library">Using the <code>google.cloud.storage</code> Python Library</h3>
+<p>To access this library will need have the Python <code>google-cloud-package library</code> <a href="https://cloud.google.com/storage/docs/reference/libraries#client-libraries-install-python">installed and configured</a>.</p>
+<p>Inside your Python virtual environment run:</p>
+<pre><code class="language-bash">&gt; pip install --upgrade google-cloud-storage
+</code></pre>
+<p>Now we need to configure our credentials. In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a> we set up a Service Account and generated a secret key. You'll need that service account and key file to continue. You can see all your service accounts with:</p>
+<pre><code class="language-bash">&gt; gcloud iam service-accounts list
+DISPLAY NAME                            EMAIL                                               DISABLED
+composer-dev                            composer-dev@de-book-dev.iam.gserviceaccount.com    False
+Compute Engine default service account  204024561480-compute@developer.gserviceaccount.com  False
+</code></pre>
+<p>We now need to give our composer-dev service account permission to manage GCS:</p>
+<pre><code class="language-bash">&gt; gcloud projects add-iam-policy-binding 'de-book-dev' \
+    --member='serviceAccount:composer-dev@de-book-dev.iam.gserviceaccount.com' \
+    --role='roles/storage.admin'
+</code></pre>
+<p>Finally, we need to set the <code>GOOGLE_APPLICATION_CREDENTIALS</code> variable in our shell, referencing our secret key file that we saved in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a>:</p>
+<pre><code class="language-bash">&gt; export GOOGLE_APPLICATION_CREDENTIALS=&quot;/path/to/keys/de-book-dev.json&quot;
+</code></pre>
+<p>If you like, you can save this variable definition in your .bash_profile file, so that it will be set by default every time your terminal loads.</p>
+<p>Now we'll create some handy functions using the <a href="https://googleapis.dev/python/storage/latest/client.html#google.cloud.storage.client.Client.create_bucket">create_bucket()</a> method from the Client object, and the <a href="https://googleapis.dev/python/storage/latest/blobs.html#google.cloud.storage.blob.Blob.upload_from_filename">upload_from_filename()</a> method from the Blob object.</p>
+<pre><code class="language-python">from google.cloud import storage
+
+def create_bucket(bucket_name: str) -&gt; None:
+    &quot;&quot;&quot;
+    This function creates a bucket with the provided bucket name. The project and location are set to default.
+    &quot;&quot;&quot;
+    client = storage.Client()
+    client.create_bucket(bucket_name)
+
+def upload_file_to_bucket(source_filepath: str, bucket_name: str, blob_name: str) -&gt; None:
+    &quot;&quot;&quot;
+    This function uploads a file to a bucket. The blob_name will be the name of the file in GCS.
+    &quot;&quot;&quot;
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    blob.upload_from_filename(source_filepath)
+
+create_bucket('de-book-test-bucket')
+upload_file_to_bucket('./files/a_text_file.txt', 'de-book-test-bucket', 'my_renamed_file.txt')
+</code></pre>
+<p>Documentation for the Python storage library is <a href="https://googleapis.dev/python/storage/latest/client.html">here</a>.</p>
+<h3 id="cleaning-up">Cleaning Up</h3>
+<p>While the <a href="https://cloud.google.com/storage/pricing">prices</a> for storage in GCS are pretty cheap, it's still worth cleaning up our Buckets. We can see all our Buckets with this command:</p>
+<pre><code class="language-bash">&gt; gsutil ls
+gs://de-book-dev/
+gs://de-book-test-bucket/
+</code></pre>
+<p>If you didn't clean up after <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a>, you should see some Buckets related to the Composer Environment we set up, in addition to the Buckets we created this chapter.</p>
+<p>To delete a Bucket and everything inside run:</p>
+<pre><code class="language-bash">&gt; gsutil rm -r gs://de-book-test-bucket
+</code></pre>
+<p>To delete all the objects in a Bucket, but leave the Bucket itself, run:</p>
+<pre><code class="language-bash">&gt; gsutil rm gs://de-book-dev/**
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4: Building a Data Warehouse with BigQuery</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_02_orchestration/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_04_data_warehouse/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 4: Building a Data Warehouse with BigQuery
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

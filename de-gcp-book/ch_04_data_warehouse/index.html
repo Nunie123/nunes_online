@@ -1,0 +1,1016 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.2.8">
+    
+    
+      
+        <title>Chapter 4: Building a Data Warehouse with BigQuery - Nunes Online</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.cb6bc1d0.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.39b8e14a.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+      
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#up-and-running-data-engineering-on-the-google-cloud-platform" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="../.." title="Nunes Online" class="md-header-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      <div class="md-header-nav__ellipsis">
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            Nunes Online
+          </span>
+        </div>
+        <div class="md-header-nav__topic">
+          <span class="md-ellipsis">
+            
+              Chapter 4: Building a Data Warehouse with BigQuery
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Nunes Online" class="md-nav__button md-logo" aria-label="Nunes Online">
+      
+  <img src="../../assets/logo.svg" alt="logo">
+
+    </a>
+    Nunes Online
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" >
+      
+      <label class="md-nav__link" for="nav-2">
+        Articles
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Articles" data-md-level="1">
+        <label class="md-nav__title" for="nav-2">
+          <span class="md-nav__icon md-icon"></span>
+          Articles
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/i_was_a_lawyer/" class="md-nav__link">
+        I was a lawyer. Now I'm a data engineer.
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/learn_from_failure/" class="md-nav__link">
+        How Great Teams Learn from Failure
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/you_cant_build/" class="md-nav__link">
+        You can’t build software without communication and teamwork
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../articles/trust_is_essential/" class="md-nav__link">
+        Trust is Essential
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3" >
+      
+      <label class="md-nav__link" for="nav-3">
+        Book Reviews
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Book Reviews" data-md-level="1">
+        <label class="md-nav__title" for="nav-3">
+          <span class="md-nav__icon md-icon"></span>
+          Book Reviews
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/clean_code/" class="md-nav__link">
+        Clean Code by Robert C. Martin
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../book_reviews/rework/" class="md-nav__link">
+        ReWork by Jason Fried and DHH
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+      
+      <label class="md-nav__link" for="nav-4">
+        Books
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Books" data-md-level="1">
+        <label class="md-nav__title" for="nav-4">
+          <span class="md-nav__icon md-icon"></span>
+          Books
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1" checked>
+      
+      <label class="md-nav__link" for="nav-4-1">
+        Up and Running: Data Engineering on the Google Cloud Platform
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="Up and Running: Data Engineering on the Google Cloud Platform" data-md-level="2">
+        <label class="md-nav__title" for="nav-4-1">
+          <span class="md-nav__icon md-icon"></span>
+          Up and Running: Data Engineering on the Google Cloud Platform
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_00_preface/" class="md-nav__link">
+        Preface
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_01_gcp_account/" class="md-nav__link">
+        Chapter 1: Setting up a GCP Account
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_02_orchestration/" class="md-nav__link">
+        Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_03_data_lake/" class="md-nav__link">
+        Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Chapter 4: Building a Data Warehouse with BigQuery
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Chapter 4: Building a Data Warehouse with BigQuery
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_05_dags/" class="md-nav__link">
+        Chapter 5: Setting up DAGs in Composer and Airflow
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_06_event_triggers/" class="md-nav__link">
+        Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_07_parallel_processing/" class="md-nav__link">
+        Chapter 7: Parallel Processing with Dataproc and Spark
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_08_streaming/" class="md-nav__link">
+        Chapter 8: Streaming Data with Pub/Sub
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_09_secrets/" class="md-nav__link">
+        Chapter 9: Managing Credentials with Google Secret Manager
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_10_infrastructure_as_code/" class="md-nav__link">
+        Chapter 10: Infrastructure as Code with Terraform
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_11_deployment_pipelines/" class="md-nav__link">
+        Chapter 11: Deployment Pipelines with Cloud Build
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ch_12_monitoring/" class="md-nav__link">
+        Chapter 12: Monitoring and Alerting
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    Table of Contents
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="up-and-running-data-engineering-on-the-google-cloud-platform">Up and Running: Data Engineering on the Google Cloud Platform</h1>
+<p>The completely free E-Book for setting up and running a Data Engineering stack on Google Cloud Platform.</p>
+<p>NOTE: This book is currently incomplete. If you find errors or would like to fill in the gaps, read the <a href="https://github.com/Nunie123/data_engineering_on_gcp_book#user-content-contributions">Contributions section</a>.</p>
+<h2 id="table-of-contents">Table of Contents</h2>
+<p><a href="https://github.com/Nunie123/data_engineering_on_gcp_book">Preface</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1: Setting up a GCP Account</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_03_data_lake.md">Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)</a> <br>
+<strong>Chapter 4: Building a Data Warehouse with BigQuery</strong> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_06_event_triggers.md">Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_07_parallel_processing.md">Chapter 7: Parallel Processing with Dataproc and Spark</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_08_streaming.md">Chapter 8: Streaming Data with Pub/Sub</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_09_secrets.md">Chapter 9: Managing Credentials with Google Secret Manager</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_10_infrastructure_as_code.md">Chapter 10: Infrastructure as Code with Terraform</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_11_deployment_pipelines.md">Chapter 11: Deployment Pipelines with Cloud Build</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_12_monitoring.md">Chapter 12: Monitoring and Alerting</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_13_up_and_running.md">Chapter 13: Up and Running - Building a Complete Data Engineering Infrastructure</a> <br>
+<a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/appendix_a_example_code/README.md">Appendix A: Example Code Repository</a></p>
+<hr />
+<h1 id="chapter-4-building-a-data-warehouse-with-bigquery"><a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_04_data_warehouse.md">Chapter 4</a>: Building a Data Warehouse with BigQuery</h1>
+<p>BigQuery is GCP's fully managed Data Warehouse service. There are no steps to take to get it running, as long as you've got a GCP account you can just start using it. </p>
+<p>While GCP's Data Engineering infrastructure services are often quite similar to corresponding AWS services, BigQuery is actually a significant departure from AWS's Data Warehouse service: Redshift. </p>
+<p>It's features and quirks include:
+1. BigQuery is fully-managed, which means that there are no options for setting compute power, storage size, or any other parameters you might be used to setting for a cloud-based database. BigQuery will auto-scale under-the-hood, so you never have to worry about whether you need to increase CPU or storage. Consequently, the billing is quite different. Rather than paying for up-time, like you will with Composer, you are billed for BigQuery based on how much data you are querying, and how much data you are storing. This can be a little dangerous, as it's not hard to accidentally run a lot of expensive queries and run up your bill.
+2. BigQuery behaves like a relational database in most respects, but does allow nested fields. For example, you can define a "users" table that has a "phone_numbers" field. That field could have multiple repeated sub-fields such as "phone_number" and "phone_type", allowing you to store multiple phone numbers with a single "user" record.
+3. BigQuery lacks primary keys and indexing, but does allow partitioning and clustering. Partitioning is useful because full table scans can cost a lot of money on large tables. Filtering by partition allows you to scan less data, reducing the cost of the query while improving performance. Partitions can still be somewhat limiting, however, as they can only be designated on a single column per table and the column must be a date, datetime, timestamp, or integer. Clustering can be used more similarly to how indexing is used on a RDBMS, improving performance by specifying a column or columns that are used frequently in queries.
+4. BigQuery can be managed by its Data Definition Language (DDL) and Data Manipulation Language (DML), but can also use be managed using the <code>bq</code> command line tool and dedicated libraries for a variety of programming languages.
+5. BigQuery tables are created inside "Datasets", which are just name-spaces for groups of tables. All Datasets are associated with a particular Project (the same way Composer Environments and GCS Buckets must be associated with a Project).</p>
+<h2 id="bigquery-query-editor">BigQuery Query Editor</h2>
+<p>BigQuery works well with GCS and Composer, allowing you to load and transform your data in your Warehouse using Python and the <code>bq</code> command line tool. However, you're still probably going to want a SQL client to debug, prototype, and explore the data in your Warehouse. Fortunately, the GCP Console includes a <a href="https://console.cloud.google.com/bigquery">BigQuery SQL client</a> for you to use. If you want to use your own SQL client, you can connect via JDBC and ODBC drivers, as described <a href="https://cloud.google.com/bigquery/providers/simba-drivers">here</a>.</p>
+<p>While you can do SQL scripting inside the Query Editor, you're going to want to use the <code>bq</code> command line tool and BigQuery Python library, described below.</p>
+<h2 id="using-the-bq-command-line-tool">Using the <code>bq</code> Command Line Tool</h2>
+<p>In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_01_gcp_account.md">Chapter 1</a>I discussed installing the GCP command line tools. You'll need them for this section.</p>
+<p>We'll also need to give our service account permission to access BigQuery:</p>
+<pre><code class="language-bash">&gt; gcloud projects add-iam-policy-binding 'de-book-dev' \
+   --member='serviceAccount:composer-dev@de-book-dev.iam.gserviceaccount.com' \
+   --role='roles/bigquery.admin'
+[...]
+&gt; export GOOGLE_APPLICATION_CREDENTIALS=&quot;/path/to/keys/de-book-dev.json&quot;
+</code></pre>
+<h3 id="creating-tables-from-the-command-line">Creating Tables from the Command Line</h3>
+<p>All tables must have a Dataset inside which they can be created. So we start by creating a Dataset, then verifying it was created:</p>
+<pre><code class="language-bash">&gt; bq mk --dataset my_dataset
+&gt; bq ls -d
+</code></pre>
+<p>Now let's create a table in our new Dataset:</p>
+<pre><code class="language-bash">&gt; bq mk --table my_dataset.inventory product_name:STRING,product_count:INT64,price:FLOAT64
+&gt; bq ls --format=pretty my_dataset
++-----------+-------+--------+-------------------+------------------+
+|  tableId  | Type  | Labels | Time Partitioning | Clustered Fields |
++-----------+-------+--------+-------------------+------------------+
+| inventory | TABLE |        |                   |                  |
++-----------+-------+--------+-------------------+------------------+
+&gt; bq show --schema my_dataset.inventory
+[{&quot;name&quot;:&quot;product_name&quot;,&quot;type&quot;:&quot;STRING&quot;},{&quot;name&quot;:&quot;product_count&quot;,&quot;type&quot;:&quot;INTEGER&quot;},{&quot;name&quot;:&quot;price&quot;,&quot;type&quot;:&quot;FLOAT&quot;}]
+</code></pre>
+<p>In the above code we created the table by providing the schema in-line with the command. Defining the schema in-line is usually impractical, so instead we'll create a file with the schema defined as JSON:</p>
+<pre><code class="language-bash">&gt; echo '
+[
+    {
+        &quot;description&quot;: &quot;The name of the item being sold.&quot;,
+        &quot;mode&quot;: &quot;REQUIRED&quot;,
+        &quot;name&quot;: &quot;product_name&quot;,
+        &quot;type&quot;: &quot;STRING&quot;
+    },
+    {
+        &quot;description&quot;: &quot;The count of all items in inventory.&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;,
+        &quot;name&quot;: &quot;product_count&quot;,
+        &quot;type&quot;: &quot;INT64&quot;
+    },
+    {
+        &quot;description&quot;: &quot;The price the item is sold for, in USD.&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;,
+        &quot;name&quot;: &quot;price&quot;,
+        &quot;type&quot;: &quot;FLOAT64&quot;
+    }
+]' &gt; inventory_schema.json
+</code></pre>
+<p>And now we'll create a table based on the schema file:</p>
+<pre><code class="language-bash">&gt; bq mk --table my_dataset.inventory_2 inventory_schema.json
+&gt; bq ls --format=pretty my_dataset
++-------------+-------+--------+-------------------+------------------+
+|   tableId   | Type  | Labels | Time Partitioning | Clustered Fields |
++-------------+-------+--------+-------------------+------------------+
+| inventory   | TABLE |        |                   |                  |
+| inventory_2 | TABLE |        |                   |                  |
++-------------+-------+--------+-------------------+------------------+
+bq show --schema my_dataset.inventory_2
+[{&quot;name&quot;:&quot;product_name&quot;,&quot;type&quot;:&quot;STRING&quot;,&quot;mode&quot;:&quot;REQUIRED&quot;,&quot;description&quot;:&quot;The name of the item being sold.&quot;},{&quot;name&quot;:&quot;product_count&quot;,&quot;type&quot;:&quot;INTEGER&quot;,&quot;mode&quot;:&quot;NULLABLE&quot;,&quot;description&quot;:&quot;The count of all items in inventory.&quot;},{&quot;name&quot;:&quot;price&quot;,&quot;type&quot;:&quot;FLOAT&quot;,&quot;mode&quot;:&quot;NULLABLE&quot;,&quot;description&quot;:&quot;The price the item is sold for, in USD.&quot;}]
+</code></pre>
+<p>More information on defining the schema is available <a href="https://cloud.google.com/bigquery/docs/schemas">here</a>.</p>
+<p>You can also define a new table by making based on a query from an existing table.</p>
+<pre><code class="language-bash">&gt; bq query --destination_table my_dataset.inventory_3 \
+&gt; --use_legacy_sql=false \
+&gt; 'select * from my_dataset.inventory'
+</code></pre>
+<p>Finally, you can create a new table as part of the <code>bq load</code> command. I'll talk more about loading data in the next section.</p>
+<pre><code class="language-bash">&gt; bq load \
+    --source_format=NEWLINE_DELIMITED_JSON \
+&gt;   my_dataset.my_table \
+&gt;   gs://path/to/blob/in/bucket/file.json \
+&gt;   my_schema.json
+</code></pre>
+<h3 id="loading-data-from-the-command-line">Loading Data from the Command Line</h3>
+<p>The major pieces of information you'll need to know for your load operation are:
+* The destination project, dataset, and table
+* The source file location
+* The source file format (<a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-avro">Avro</a>, <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-parquet">Parquet</a>, <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-orc">ORC</a>, <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-csv">CSV</a>, <a href="https://cloud.google.com/bigquery/docs/loading-data-cloud-storage-json">JSON</a>)
+* The schema of the destination table
+* Whether you are replacing or appending to the destination table (<code>--replace</code> and <code>--noreplace</code> flags)
+* How you are choosing to partition the table</p>
+<p>Let's start by creating our raw data file to be loaded into BigQuery:</p>
+<pre><code class="language-bash">&gt; echo '
+[
+    {
+        &quot;product_id&quot;: 1,
+        &quot;product_name&quot;: &quot;hammer&quot;,
+        &quot;product_tags&quot;: [
+            {
+                &quot;tag_id&quot;: 1,
+                &quot;tag_name&quot;: &quot;sale&quot;
+            },
+            {
+                &quot;tag_id&quot;: 2,
+                &quot;tag_name&quot;: &quot;tool&quot;
+            }
+        ],
+        &quot;created_on&quot;: &quot;2020-10-19&quot;
+    },
+    {
+        &quot;product_id&quot;: 2,
+        &quot;product_name&quot;: &quot;pen&quot;,
+        &quot;product_tags&quot;: [
+            {
+                &quot;tag_id&quot;: 1,
+                &quot;tag_name&quot;: &quot;sale&quot;
+            },
+            {
+                &quot;tag_id&quot;: 3,
+                &quot;tag_name&quot;: &quot;stationary&quot;
+            }
+        ],
+        &quot;created_on&quot;: &quot;2020-10-19&quot;
+    },
+    {
+        &quot;product_id&quot;: 3,
+        &quot;product_name&quot;: &quot;drill&quot;,
+        &quot;product_tags&quot;: [
+            {
+                &quot;tag_id&quot;: 2,
+                &quot;tag_name&quot;: &quot;tool&quot;
+            }
+        ],
+        &quot;created_on&quot;: &quot;2020-10-19&quot;
+    }
+]' &gt; products.json
+</code></pre>
+<p>While BigQuery can ingest JSON files, they must be newline delimited JSON (also called JSON Lines) files. This means that each record is separated by a newline character. Many source systems will export to newline delimited JSON, but if you're stuck with a JSON blob like we have above you'll have to convert it yourself. Let's convert the above file using the <a href="https://stedolan.github.io/jq/download/">jq</a> command line tool:</p>
+<pre><code class="language-bash">&gt; cat products.json | jq -c '.[]' &gt; products.jsonl
+</code></pre>
+<p>Note that I used the ".jsonl" extension for the destination file. I could have stuck with the ".json" extension, as BigQuery doesn't care what the extension is.</p>
+<p>Now that we have our data we can define our schema. As mentioned in above, the load command will create a table if one does not exist, so providing the schema here will define your table. The <code>--autodetect</code> flag can be used to have BigQuery infer your schema from the data, but that should generally be avoided outside of development and prototyping. Let's create a schema definition file:</p>
+<pre><code class="language-bash">&gt; echo '
+[
+    {
+        &quot;name&quot;: &quot;product_id&quot;,
+        &quot;type&quot;: &quot;INT64&quot;,
+        &quot;mode&quot;: &quot;REQUIRED&quot;,
+        &quot;description&quot;: &quot;The unique ID for the product.&quot;
+    },{
+        &quot;name&quot;: &quot;product_name&quot;,
+        &quot;type&quot;: &quot;STRING&quot;,
+        &quot;mode&quot;: &quot;NULLABLE&quot;,
+        &quot;description&quot;: &quot;The name of the product.&quot;
+    },{
+        &quot;name&quot;: &quot;product_tags&quot;,
+        &quot;type&quot;: &quot;RECORD&quot;,
+        &quot;mode&quot;: &quot;REPEATED&quot;,
+        &quot;description&quot;: &quot;All tags associated with the product.&quot;,
+        &quot;fields&quot;: [{
+            &quot;name&quot;: &quot;tag_id&quot;,
+            &quot;type&quot;: &quot;INT64&quot;,
+            &quot;mode&quot;: &quot;NULLABLE&quot;,
+            &quot;description&quot;: &quot;The unique ID for the tag.&quot;
+        }, {
+            &quot;name&quot;: &quot;tag_name&quot;,
+            &quot;type&quot;: &quot;STRING&quot;,
+            &quot;mode&quot;: &quot;NULLABLE&quot;,
+            &quot;description&quot;: &quot;The name of the tag.&quot;
+        }]
+    },{
+        &quot;name&quot;: &quot;created_on&quot;,
+        &quot;type&quot;: &quot;DATE&quot;,
+        &quot;mode&quot;: &quot;REQUIRED&quot;,
+        &quot;description&quot;: &quot;The date the product was added to inventory.&quot;
+    }
+]' &gt; products_schema.json
+</code></pre>
+<p>You'll notice that this schema defines a nested field, called a "REPEATED" field in BigQuery. Fields can be nested up to 15 layers deep. The schema above includes the "product_tags" field, a field of "REPEATED" "RECORDS" which is the equivalent of an array or objects in JSON. BigQuery also supports structures like an array of integers, or an array of dates, but it does not support an array of arrays.</p>
+<p>Now that we have our schema file, let's load our data.</p>
+<pre><code class="language-bash">&gt; bq load \
+    --source_format=NEWLINE_DELIMITED_JSON \
+    --replace \
+    --time_partitioning_type=DAY \
+    --time_partitioning_field created_on \
+&gt;   my_dataset.products \
+&gt;   products.jsonl \
+&gt;   products_schema.json
+Upload complete.
+Waiting on bqjob_r3f8263b30008fbdf_00000175442a455c_1 ... (1s) Current status: DONE  
+&gt; bq head --table my_dataset.products
++------------+--------------+---------------------------------------------------------------------------+------------+
+| product_id | product_name |                               product_tags                                | created_on |
++------------+--------------+---------------------------------------------------------------------------+------------+
+|          1 | hammer       |       [{&quot;tag_id&quot;:&quot;1&quot;,&quot;tag_name&quot;:&quot;sale&quot;},{&quot;tag_id&quot;:&quot;2&quot;,&quot;tag_name&quot;:&quot;tool&quot;}] | 2020-10-19 |
+|          2 | pen          | [{&quot;tag_id&quot;:&quot;1&quot;,&quot;tag_name&quot;:&quot;sale&quot;},{&quot;tag_id&quot;:&quot;3&quot;,&quot;tag_name&quot;:&quot;stationary&quot;}] | 2020-10-19 |
+|          3 | drill        |                                        [{&quot;tag_id&quot;:&quot;2&quot;,&quot;tag_name&quot;:&quot;tool&quot;}] | 2020-10-19 |
++------------+--------------+---------------------------------------------------------------------------+------------+
+</code></pre>
+<p>I specified that the table is partitioned on the <code>created_on</code> field, so right now this. This means that each distinct date in that field will be treated as a distinct partition, improving performance when filtering on that field. </p>
+<p>Partitions are always optional, but are useful when you know you will be filtering on a particular field (e.g. querying for all products created in the last seven days). If I included <code>--time_partitioning_type=DAY</code> but did not provide a field to partition on, BigQuery would have automatically assigned a partition date of the date the record was ingested into BigQuery. We can filter on this automatically generated partition date by using BigQuery's <a href="https://cloud.google.com/bigquery/docs/querying-partitioned-tables#limiting_partitions_queried_using_pseudo_columns">pseudo-columns</a>: <code>_PARTITIONDATE</code>, and <code>_PARTITIONTIME</code>.</p>
+<h2 id="using-the-googlecloudbigquery-python-library">Using the <code>google.cloud.bigquery</code> Python Library</h2>
+<p>We can also interact with BigQuery in Python. In <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_02_orchestration.md">Chapter 2</a> we used the <code>google.cloud.storage</code> library, and now for BigQuery we'll need to install the <code>google.cloud.bigquery</code> library:</p>
+<pre><code class="language-bash">&gt; pip install --upgrade google-cloud-bigquery
+</code></pre>
+<h3 id="creating-tables-from-python">Creating Tables from Python</h3>
+<pre><code class="language-python">from google.cloud import bigquery
+
+def create_dataset(dataset_name: str, project_name: str) -&gt; None:
+    dataset_id = f'{project_name}.{dataset_name}'
+    dataset_obj = bigquery.Dataset(dataset_id)
+    client = bigquery.Client()
+    dataset = client.create_dataset(dataset_obj)
+
+def create_table(table_name: str, dataset_name: str, project_name: str, schema: list) -&gt; None:
+    table_id = f'{project_name}.{dataset_name}.{table_name}'
+    table_obj = bigquery.Table(table_id, schema)
+    client = bigquery.Client()
+    table = client.create_table(table_obj)
+
+project_name = 'de-book-dev'
+dataset_name = 'my_other_dataset'
+table_name = 'user_purchases'
+schema = [
+    bigquery.SchemaField('user_name', 'STRING', mode='REQUIRED'),
+    bigquery.SchemaField('items_purchased', 'INT64', mode='REQUIRED'),
+    bigquery.SchemaField('dollars_spent', 'FLOAT64', mode='REQUIRED')
+]
+
+create_dataset(dataset_name, project_name)
+create_table(table_name, dataset_name, project_name, schema)
+</code></pre>
+<p>We can also create a table from a query:</p>
+<pre><code class="language-python">from google.cloud import bigquery
+
+def create_table_from_query(table_name: str, dataset_name: str, project_name: str, raw_sql: str) -&gt; None:
+    table_id = f'{project_name}.{dataset_name}.{table_name}'
+    job_config = bigquery.QueryJobConfig(destination=table_id)
+    client = bigquery.Client()
+    query_job = client.query(raw_sql, job_config=job_config)
+    query_job.result()
+
+project_name = 'de-book-dev'
+dataset_name = 'my_other_dataset'
+table_name = 'user_purchases_copy'
+raw_sql = 'select user_name, items_purchased, dollars_spent from my_other_dataset.user_purchases'
+create_table_from_query(table_name, dataset_name, project_name, raw_sql)
+</code></pre>
+<p>You can find the documentation for the Python API <a href="https://googleapis.dev/python/bigquery/latest/index.html">here</a>.</p>
+<h3 id="loading-data-from-python">Loading Data from Python</h3>
+<p>Now let's load our data using the "products.json" file we created above:</p>
+<pre><code class="language-python">import json
+from google.cloud import bigquery
+
+def load_json_data(table_id: str, source_file_location: str, schema: list) -&gt; None:
+    client = bigquery.Client()
+    job_config = bigquery.LoadJobConfig(
+        schema=schema,
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+    )
+    with open(source_file_location, 'r') as f:
+        data = json.load(f)
+        load_job = client.load_table_from_json(
+            data,
+            table_id,
+            job_config=job_config,
+        )
+        load_job.result()
+
+table_id = 'de-book-dev.my_other_dataset.products'
+source_file_location = 'products.json'
+schema = [
+    bigquery.SchemaField('product_id', 'INT64', mode='REQUIRED'),
+    bigquery.SchemaField('product_name', 'STRING', mode='NULLABLE'),
+    bigquery.SchemaField('product_tags'
+                        , 'RECORD'
+                        , mode='REPEATED'
+                        , fields=[
+                            bigquery.SchemaField('tag_id', 'INT64', mode='REQUIRED'),
+                            bigquery.SchemaField('tag_name', 'STRING', mode='NULLABLE'),
+                        ]),
+    bigquery.SchemaField('created_on', 'DATE', mode='REQUIRED')
+]
+load_json_data(table_id, source_file_location, schema)
+
+</code></pre>
+<p>Just like above, we're loading data with a nested field. Unlike the <code>bq load</code> command, if you wish to use the BigQuery's Python API to load data into a partitioned table you must create the table with the specified partition first, then load the data.</p>
+<h2 id="cleaning-up">Cleaning Up</h2>
+<p>Because BigQuery bills based on data processed and storage quantity, rather than uptime, leaving our test data in there from this chapter will incur almost no costs. Nonetheless, it's good to clean up so we can have a blank start when we start creating and loading tables as part of our DAGs in <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5</a>.</p>
+<p>Let's start by listing all our datasets:</p>
+<pre><code class="language-bash">&gt; bq ls -d
+my_dataset        
+my_other_dataset  
+</code></pre>
+<p>Now let's delete them. We use the <code>-r</code> flag to indicate we also want the associated tables deleted:</p>
+<pre><code class="language-bash">&gt; bq rm -d -r my_dataset
+&gt; bq rm -d -r my_other_dataset
+</code></pre>
+<hr />
+<p>Next Chapter: <a href="https://github.com/Nunie123/data_engineering_on_gcp_book/blob/master/ch_05_dags.md">Chapter 5: Setting up DAGs in Composer and Airflow</a></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../ch_03_data_lake/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../ch_05_dags/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Chapter 5: Setting up DAGs in Composer and Airflow
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/vendor.18f0862e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.994580cf.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "../..",
+          features: ['navigation.instant'],
+          search: Object.assign({
+            worker: "../../assets/javascripts/worker/search.9c0e82ba.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
