@@ -1,0 +1,32 @@
+site_name: Nunes Online
+theme:
+  name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  features:
+    - navigation.instant
+nav:
+    - Home: index.md
+    - Articles:
+      - "I was a lawyer. Now I'm a data engineer.": articles/i_was_a_lawyer.md
+      - How Great Teams Learn from Failure: articles/learn_from_failure.md
+      - You can’t build software without communication and teamwork: articles/you_cant_build.md
+      - Trust is Essential: articles/trust_is_essential.md
+    - Book Reviews:
+      - Clean Code by Robert C. Martin: book_reviews/clean_code.md
+      - ReWork by Jason Fried and DHH: book_reviews/rework.md
+    - Books:
+      - "Up and Running: Data Engineering on the Google Cloud Platform":
+        - "Preface": de-gcp-book/ch_00_preface.md
+        - "Chapter 1: Setting up a GCP Account": de-gcp-book/ch_01_gcp_account.md
+        - "Chapter 2: Setting up Batch Processing Orchestration with Composer and Airflow": de-gcp-book/ch_02_orchestration.md
+        - "Chapter 3: Building a Data Lake with Google Cloud Storage (GCS)": de-gcp-book/ch_03_data_lake.md
+        - "Chapter 4: Building a Data Warehouse with BigQuery": de-gcp-book/ch_04_data_warehouse.md
+        - "Chapter 5: Setting up DAGs in Composer and Airflow": de-gcp-book/ch_05_dags.md
+        - "Chapter 6: Setting up Event-Triggered Pipelines with Cloud Functions": de-gcp-book/ch_06_event_triggers.md
+        - "Chapter 7: Parallel Processing with Dataproc and Spark": de-gcp-book/ch_07_parallel_processing.md
+        - "Chapter 8: Streaming Data with Pub/Sub": de-gcp-book/ch_08_streaming.md
+        - "Chapter 9: Managing Credentials with Google Secret Manager": de-gcp-book/ch_09_secrets.md
+        - "Chapter 10: Infrastructure as Code with Terraform": de-gcp-book/ch_10_infrastructure_as_code.md
+        - "Chapter 11: Deployment Pipelines with Cloud Build": de-gcp-book/ch_11_deployment_pipelines.md
+        - "Chapter 12: Monitoring and Alerting": de-gcp-book/ch_12_monitoring.md
